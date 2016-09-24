@@ -16,8 +16,8 @@
         <ListView Name="lvUsers">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="Name" Width="400" DisplayMemberBinding="{Binding Name}" />
-                    <GridViewColumn Header="Age" Width="100" DisplayMemberBinding="{Binding Age}" />
+                    <GridViewColumn Header="Path" Width="400" DisplayMemberBinding="{Binding Path}" />
+                    <GridViewColumn Header="Active" Width="100" DisplayMemberBinding="{Binding Active}" />
                 </GridView>
             </ListView.View>
         </ListView>

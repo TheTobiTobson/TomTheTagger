@@ -14,6 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Newtonsoft.Json;
+using System.Collections.ObjectModel;
 
 namespace TomTheTagger
 {
@@ -24,22 +25,28 @@ namespace TomTheTagger
     {
         DatabaseManager oDataBase = new DatabaseManager("JSONTestData.txt");
 
+        // List with search Results
+        List<TaggedFile> oSearchResultsWithCorrespondingTags = new List<TaggedFile>();
+
         public MainWindow()
         {
             InitializeComponent();
-            oDataBase.LoadJsonDatabaseFile();        
+            oDataBase.LoadJsonDatabaseFile();
+            lvUsers.ItemsSource = oSearchResultsWithCorrespondingTags;
+
         }
 
         private void TagBox1_KeyDown(object sender, KeyEventArgs e)
         {
             if(e.Key == Key.Enter)
             {
-                MessageBox.Show(oDataBase.SearchDatabaseForTag("hi").ToString());
+                oSearchResultsWithCorrespondingTags = oDataBase.SearchDatabaseForTag(TagBox1.Text);
+                lvUsers.ItemsSource = oSearchResultsWithCorrespondingTags;
             }
         }
     }
 
-    public class TaggedFile
+    class TaggedFile
     {
         public string Path { get; set; }
         public bool Active { get; set; }
@@ -64,12 +71,40 @@ namespace TomTheTagger
             mTaggedFileListe = JsonConvert.DeserializeObject<List<TaggedFile>>(JsonDatabaseFileInString);
         }
 
+        // Search in Database
         public List<TaggedFile> SearchDatabaseForTag(string pTagToSearchFor)
         {
             List<TaggedFile> localSearchResults = new List<TaggedFile>();
 
-            localSearchResults.Add(mTaggedFileListe[0]);
-            localSearchResults.Add(mTaggedFileListe[2]);
+            var Seach = from TaggedFiles in mTaggedFileListe
+                        from TagsinTaggedFiles in TaggedFiles.Tags
+                        where TagsinTaggedFiles == pTagToSearchFor
+                        //where TaggedFiles.Active == true
+                        select TaggedFiles;
+
+            localSearchResults = Seach.ToList();
+
+            //List<TaggedFile> localSearchResults = new List<TaggedFile>();
+
+            //List<TaggedFile> localSearchResults = from TaggedFiles in mTaggedFileListe
+            //            from TagsinTaggedFiles in TaggedFiles.Tags
+            //            where TagsinTaggedFiles == pTagToSearchFor
+            //            //where TaggedFiles.Active == true
+            //            select
+
+
+
+
+            //if (pTagToSearchFor == "VAT")
+            //{
+            //    localSearchResults.Add(mTaggedFileListe[0]);
+            //    localSearchResults.Add(mTaggedFileListe[2]);
+            //}
+            //else
+            //{
+            //    localSearchResults.Add(mTaggedFileListe[1]);
+            //    localSearchResults.Add(mTaggedFileListe[3]);
+            //}           
 
             return localSearchResults;
         }
