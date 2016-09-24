@@ -79,33 +79,10 @@ namespace TomTheTagger
             var Seach = from TaggedFiles in mTaggedFileListe
                         from TagsinTaggedFiles in TaggedFiles.Tags
                         where TagsinTaggedFiles == pTagToSearchFor
-                        //where TaggedFiles.Active == true
                         select TaggedFiles;
 
             localSearchResults = Seach.ToList();
-
-            //List<TaggedFile> localSearchResults = new List<TaggedFile>();
-
-            //List<TaggedFile> localSearchResults = from TaggedFiles in mTaggedFileListe
-            //            from TagsinTaggedFiles in TaggedFiles.Tags
-            //            where TagsinTaggedFiles == pTagToSearchFor
-            //            //where TaggedFiles.Active == true
-            //            select
-
-
-
-
-            //if (pTagToSearchFor == "VAT")
-            //{
-            //    localSearchResults.Add(mTaggedFileListe[0]);
-            //    localSearchResults.Add(mTaggedFileListe[2]);
-            //}
-            //else
-            //{
-            //    localSearchResults.Add(mTaggedFileListe[1]);
-            //    localSearchResults.Add(mTaggedFileListe[3]);
-            //}           
-
+            
             return localSearchResults;
         }
     }
