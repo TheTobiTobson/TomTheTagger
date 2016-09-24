@@ -8,7 +8,7 @@
         Title="MainWindow" Height="350" Width="510">
     <DockPanel>
         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Height="40">
-            <TextBox Name="TagBox1" Height="20" Width="100" Margin="20,0,0,0"></TextBox>
+            <TextBox Name="TagBox1" KeyDown="TagBox1_KeyDown" Height="20" Width="100" Margin="20,0,0,0"></TextBox>
             <TextBox Name="TagBox2" Height="20" Width="100" Margin="20,0,0,0"></TextBox>
             <TextBox Name="TagBox3" Height="20" Width="100" Margin="20,0,0,0"></TextBox>
             <TextBox Name="TagBox4" Height="20" Width="100" Margin="20,0,0,0"></TextBox>
