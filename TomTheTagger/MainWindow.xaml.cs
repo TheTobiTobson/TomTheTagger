@@ -26,7 +26,7 @@ namespace TomTheTagger
         DatabaseManager oDataBase = new DatabaseManager("JSONTestData.txt");
 
         // List with search Results
-        List<TaggedFile> oSearchResultsWithCorrespondingTags = new List<TaggedFile>();
+        List<SearchRelatedInfosForOneFile> oSearchResultsWithCorrespondingTags = new List<SearchRelatedInfosForOneFile>();
 
         public MainWindow()
         {
@@ -40,17 +40,26 @@ namespace TomTheTagger
         {
             if(e.Key == Key.Enter)
             {
-                oSearchResultsWithCorrespondingTags = oDataBase.SearchDatabaseForTag(TagBox1.Text);
+                oSearchResultsWithCorrespondingTags = oDataBase.SearchDatabaseForTag(TagBox1.Text, TagBox2.Text);
                 lvUsers.ItemsSource = oSearchResultsWithCorrespondingTags;
             }
         }
     }
 
+    // Place to store data from JSON Database file
     class TaggedFile
     {
+        public int IdentNr { get; set; }   
         public string Path { get; set; }
         public bool Active { get; set; }
         public IList<string> Tags { get; set; }
+    }
+
+    // Place to store data from JSON Database file
+    class SearchRelatedInfosForOneFile
+    {
+        public int IdentNr { get; set; }        
+        public string[] TagsInThisFileWhichCorrespondToQuery { get; set; }
     }
 
     class DatabaseManager
@@ -72,17 +81,27 @@ namespace TomTheTagger
         }
 
         // Search in Database
-        public List<TaggedFile> SearchDatabaseForTag(string pTagToSearchFor)
+        public List<SearchRelatedInfosForOneFile> SearchDatabaseForTag(string pTagToSearchForFromTagBox1, string pTagToSearchForFromTagBox2)
         {
-            List<TaggedFile> localSearchResults = new List<TaggedFile>();
 
-            var Seach = from TaggedFiles in mTaggedFileListe
-                        from TagsinTaggedFiles in TaggedFiles.Tags
-                        where TagsinTaggedFiles == pTagToSearchFor
-                        select TaggedFiles;
+            //Create Array with Tags to be searched
+            string[] TagsToBeSearchedFor = { pTagToSearchForFromTagBox1, pTagToSearchForFromTagBox2 };
 
-            localSearchResults = Seach.ToList();
-            
+            List<SearchRelatedInfosForOneFile> localSearchResults = new List<SearchRelatedInfosForOneFile>();
+
+            foreach (var SearchTag in TagsToBeSearchedFor)
+            {
+                var Search = from TaggedFiles in mTaggedFileListe
+                             from TagsinTaggedFiles in TaggedFiles.Tags
+                             where TagsinTaggedFiles == SearchTag
+                             //select TaggedFiles.IdentNr;
+                             select new SearchRelatedInfosForOneFile { IdentNr = TaggedFiles.IdentNr, TagsInThisFileWhichCorrespondToQuery = new string[] { SearchTag } };
+
+                //Noch wird Liste an dieser Stelle Überschrieben. Hier muss jetzt Logik hin um Liste zusammen zu fügen
+                localSearchResults = Search.ToList();
+            }
+
+
             return localSearchResults;
         }
     }
