@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TomTheTagger"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="510">
+        Title="MainWindow" Height="350" Width="600">
     <DockPanel>
         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Height="40">
             <TextBox Name="TagBox1" KeyDown="TagBox1_KeyDown" Height="20" Width="100" Margin="20,0,0,0"></TextBox>
@@ -16,8 +16,11 @@
         <ListView Name="lvUsers">
             <ListView.View>
                 <GridView>
+                    <GridViewColumn Header="ID" Width="40" DisplayMemberBinding="{Binding IdentNr}" />
                     <GridViewColumn Header="Path" Width="400" DisplayMemberBinding="{Binding Path}" />
-                    <GridViewColumn Header="Active" Width="100" DisplayMemberBinding="{Binding Active}" />
+                    <GridViewColumn Header="Tag 0" Width="40" DisplayMemberBinding="{Binding TagsCorrespondingToSearch[0]}" />
+                    <GridViewColumn Header="Tag 1" Width="40" DisplayMemberBinding="{Binding TagsCorrespondingToSearch[1]}" />
+                    <GridViewColumn Header="Tag 2" Width="40" DisplayMemberBinding="{Binding TagsCorrespondingToSearch[2]}" />
                 </GridView>
             </ListView.View>
         </ListView>
