@@ -55,13 +55,18 @@ namespace TomTheTagger
         public IList<string> Tags { get; set; }
     }
 
-    // Place to store data from JSON Database file
+    // Place to store data from search
     class SearchRelatedInfosForOneFile
     {
-        public int IdentNr { get; set; }        
-        public string[] TagsInThisFileWhichCorrespondToQuery { get; set; }
+        public int IdentNr { get; set; }
+        //public string[] TagsInThisFileWhichCorrespondToQuery { get; set; }
+        public List<string> TagsInThisFileWhichCorrespondToQuery { get; set; }
     }
-
+    
+    /// <summary>    /// 
+    /// > Load Database from file to RAM
+    /// > Search in Database for Tags
+    /// </summary>
     class DatabaseManager
     {
         public string mDatabaseLocation; //Location of JSON Database file
@@ -89,18 +94,43 @@ namespace TomTheTagger
 
             List<SearchRelatedInfosForOneFile> localSearchResults = new List<SearchRelatedInfosForOneFile>();
 
-            foreach (var SearchTag in TagsToBeSearchedFor)
-            {
-                var Search = from TaggedFiles in mTaggedFileListe
+            //foreach (var SearchTag in TagsToBeSearchedFor)
+            //{
+            //    var Search = from TaggedFiles in mTaggedFileListe
+            //                 from TagsinTaggedFiles in TaggedFiles.Tags
+            //                 where TagsinTaggedFiles == SearchTag
+            //                 //select TaggedFiles.IdentNr;
+            //                 select new SearchRelatedInfosForOneFile { IdentNr = TaggedFiles.IdentNr, TagsInThisFileWhichCorrespondToQuery = new string[] { SearchTag } };
+
+            //    //Noch wird Liste an dieser Stelle Überschrieben. Hier muss jetzt Logik hin um Liste zusammen zu fügen
+            //    localSearchResults = Search.ToList();
+            //}
+
+            SearchRelatedInfosForOneFile ResultAfterOneSearch = new SearchRelatedInfosForOneFile();
+            ResultAfterOneSearch.IdentNr = 2234;
+            ResultAfterOneSearch.TagsInThisFileWhichCorrespondToQuery.Add("hihi");
+
+            // Suche Nr 1
+            var Search1 = from TaggedFiles in mTaggedFileListe
+                          from TagsinTaggedFiles in TaggedFiles.Tags
+                          where TagsinTaggedFiles == pTagToSearchForFromTagBox1
+                          //select TaggedFiles.IdentNr;
+                          select ResultAfterOneSearch.IdentNr = TaggedFiles.IdentNr
+                          
+            
+           
+
+            // Suche Nr 1
+                var Search2 = from TaggedFiles in mTaggedFileListe
                              from TagsinTaggedFiles in TaggedFiles.Tags
-                             where TagsinTaggedFiles == SearchTag
+                             where TagsinTaggedFiles == pTagToSearchForFromTagBox2
                              //select TaggedFiles.IdentNr;
-                             select new SearchRelatedInfosForOneFile { IdentNr = TaggedFiles.IdentNr, TagsInThisFileWhichCorrespondToQuery = new string[] { SearchTag } };
+                             select new SearchRelatedInfosForOneFile { IdentNr = TaggedFiles.IdentNr, TagsInThisFileWhichCorrespondToQuery = new string[] { pTagToSearchForFromTagBox2 } };
 
-                //Noch wird Liste an dieser Stelle Überschrieben. Hier muss jetzt Logik hin um Liste zusammen zu fügen
-                localSearchResults = Search.ToList();
-            }
-
+            var query = from s1 in Search1
+                        join s2 in Search2 on s1.IdentNr equals s2.IdentNr
+                       // select new SearchRelatedInfosForOneFile { IdentNr = s1.IdentNr, TagsInThisFileWhichCorrespondToQuery = new string[] { s1.TagsInThisFileWhichCorrespondToQuery,  } };
+                       select ResultAfterOneSearch.TagsInThisFileWhichCorrespondToQuery[].
 
             return localSearchResults;
         }
