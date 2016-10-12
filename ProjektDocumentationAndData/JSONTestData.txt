@@ -1,0 +1,60 @@
+[{
+	"IdentNr": 1,
+	"Path": "C:\\TobiData\\SW_Projects\\AAATestData\\Test1.txt",
+	"Active": false,
+	"Tags": ["ARD"]
+},
+{
+	"IdentNr": 2,
+	"Path": "C:\\TobiData\\SW_Projects\\AAATestData\\Test2.txt",
+	"Active": false,
+	"Tags": ["ZDF"]
+},
+{
+	"IdentNr": 3,
+	"Path": "C:\\TobiData\\SW_Projects\\AAATestData\\Test3.txt",
+	"Active": false,
+	"Tags": ["CUA"]
+},
+{
+	"IdentNr": 12,
+	"Path": "C:\\TobiData\\SW_Projects\\AAATestData\\Test12.txt",
+	"Active": false,
+	"Tags": ["ARD",
+	"ZDF"]
+},
+{
+	"IdentNr": 13,
+	"Path": "C:\\TobiData\\SW_Projects\\AAATestData\\Test13.txt",
+	"Active": false,
+	"Tags": ["ARD",
+	"CUA"]
+},
+{
+	"IdentNr": 23,
+	"Path": "C:\\TobiData\\SW_Projects\\AAATestData\\Test23.txt",
+	"Active": false,
+	"Tags": ["ZDF",
+	"CUA"]
+},
+{
+	"IdentNr": 123,
+	"Path": "C:\\TobiData\\SW_Projects\\AAATestData\\Test123.txt",
+	"Active": false,
+	"Tags": ["ARD",
+	"ZDF",
+	"CUA"]
+},
+{
+	"IdentNr": 4,
+	"Path": "C:\\TobiData\\SW_Projects\\AAATestData\\Test4.txt",
+	"Active": false,
+	"Tags": ["USA"]
+},
+{
+	"IdentNr": 14,
+	"Path": "C:\\TobiData\\SW_Projects\\AAATestData\\Test14.txt",
+	"Active": false,
+	"Tags": ["ARD",
+	"USA"]
+}]

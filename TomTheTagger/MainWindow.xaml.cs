@@ -40,7 +40,7 @@ namespace TomTheTagger
         {
             if(e.Key == Key.Enter)
             {
-                oSearchResultsWithCorrespondingTags = oDataBase.SearchDatabaseForTag(TagBox1.Text, TagBox2.Text);
+                oSearchResultsWithCorrespondingTags = oDataBase.SearchDatabaseForTag(TagBox1.Text, TagBox2.Text, TagBox3.Text, TagBox4.Text);
                 lvUsers.ItemsSource = oDataBase.JoinListsForGui(oSearchResultsWithCorrespondingTags);
             }
         }
@@ -115,75 +115,146 @@ namespace TomTheTagger
         //          IdentNr: 1234, Tags: "VAT", "APC", "TW"  
         //          IdentNr: 3333, Tags: "BMW", "APC", "TW"  
         ///////////////////////////////////////////////////////
-        public List<SearchRelatedInfosMerged> SearchDatabaseForTag(string pTagToSearchForFromTagBox1, string pTagToSearchForFromTagBox2)
+        public List<SearchRelatedInfosMerged> SearchDatabaseForTag(string pTagToSearchForFromTagBox1, string pTagToSearchForFromTagBox2, string pTagToSearchForFromTagBox3, string pTagToSearchForFromTagBox4)
         {
-
-            //Create Array with Tags to be searched
-            string[] TagsToBeSearchedFor = { pTagToSearchForFromTagBox1, pTagToSearchForFromTagBox2 };
-
-           
+            // Local Storage for Search Infos
             List<SearchRelatedInfosMerged> MergedInfos = new List<SearchRelatedInfosMerged>();
 
+            int amountOfTagsToBeSearchedFor = 0;
 
-            var Search1 = from TaggedFiles in mTaggedFileListe
-                          from TagsinTaggedFiles in TaggedFiles.Tags
-                          where TagsinTaggedFiles == pTagToSearchForFromTagBox1
-                          select new SearchRelatedInfosMerged(TaggedFiles.IdentNr, pTagToSearchForFromTagBox1);
+            //Create Array with Tags to be searched
+            string[] TagsToBeSearchedFor = { pTagToSearchForFromTagBox1, pTagToSearchForFromTagBox2, pTagToSearchForFromTagBox3, pTagToSearchForFromTagBox4 };
 
-            MergedInfos = Search1.ToList();
-
-            var Search2 = from TaggedFiles in mTaggedFileListe
-                          from TagsinTaggedFiles in TaggedFiles.Tags
-                          where TagsinTaggedFiles == pTagToSearchForFromTagBox2
-                          select new SearchRelatedInfosNew() { mIdentNr = TaggedFiles.IdentNr, mOneTagInThisFileThatCorrespondsToQuery = pTagToSearchForFromTagBox2};
-
-            foreach (var IdentONEtagCombi in Search2)
+            foreach (var item in TagsToBeSearchedFor)
             {
-                bool subLoopEnteredSomethingInMergedInfo = false;
-
-                foreach (var IdentMULTIPLEtagCombi in MergedInfos)
+                
+                if(item.Length != 0)
                 {
-                    if (IdentONEtagCombi.mIdentNr == IdentMULTIPLEtagCombi.mIdentNr)
-                    {
-                        IdentMULTIPLEtagCombi.addTag(IdentONEtagCombi.mOneTagInThisFileThatCorrespondsToQuery);
-                        subLoopEnteredSomethingInMergedInfo = true;
-
-                        // There is only one matching IdentNr in IdentMULTIPLEtagCombi >> work is done for this loop
-                        break;
-                    }
-                }
-
-                if (!subLoopEnteredSomethingInMergedInfo)
-                {
-                    MergedInfos.Add(new SearchRelatedInfosMerged(IdentONEtagCombi.mIdentNr, IdentONEtagCombi.mOneTagInThisFileThatCorrespondsToQuery));
+                    amountOfTagsToBeSearchedFor++;
                 }
             }
 
-            //List<int> TestIntList = new List<int>();
-            //TestIntList.Add(1111);
-            //TestIntList.Add(1234);
+            if (amountOfTagsToBeSearchedFor == 0)
+            {
 
-            //var Merge = from sNew in TestIntList
-            //            join sMerged in Search1 on sNew equals sMerged.mIdentNr
-            //            select sMerged.mAllTagInThisFileThatCorrespondsToQuery.Add(sNew);
+            }
+            //////////////// 1 TAGS ////////////////
+            else if (amountOfTagsToBeSearchedFor == 1)
+            {
+                var Search1 = from TaggedFiles in mTaggedFileListe
+                              from TagsinTaggedFiles in TaggedFiles.Tags
+                              where TagsinTaggedFiles == pTagToSearchForFromTagBox1
+                              select new SearchRelatedInfosMerged(TaggedFiles.IdentNr, pTagToSearchForFromTagBox1);
 
-            //MergedInfos[0].mAllTagInThisFileThatCorrespondsToQuery.SingleOrDefault()
+                MergedInfos = Search1.ToList();
+            }
+            //////////////// 2 TAGS ////////////////
+            else if (amountOfTagsToBeSearchedFor == 2)
+            {
+                var Search1 = from TaggedFiles in mTaggedFileListe
+                              from TagsinTaggedFiles in TaggedFiles.Tags
+                              where TagsinTaggedFiles == pTagToSearchForFromTagBox1
+                              select new SearchRelatedInfosMerged(TaggedFiles.IdentNr, pTagToSearchForFromTagBox1);
 
-            //var Merged = from sMerged in MergedInfos
-            //             where sMerged.mIdentNr == 1234
-            //             select sMerged.mAllTagInThisFileThatCorrespondsToQuery.Add("hongpong");
+                MergedInfos = Search1.ToList();
 
+                var Search2 = from TaggedFiles in mTaggedFileListe
+                              from TagsinTaggedFiles in TaggedFiles.Tags
+                              where TagsinTaggedFiles == pTagToSearchForFromTagBox2
+                              select new SearchRelatedInfosNew() { mIdentNr = TaggedFiles.IdentNr, mOneTagInThisFileThatCorrespondsToQuery = pTagToSearchForFromTagBox2 };
 
-            //var Search2 = from TaggedFiles in mTaggedFileListe
-            //              from TagsinTaggedFiles in TaggedFiles.Tags
-            //              where TagsinTaggedFiles == pTagToSearchForFromTagBox2
-            //              //select TaggedFiles.IdentNr;
-            //              select new SearchRelatedInfosMerged { IdentNr = TaggedFiles.IdentNr, TagInThisFileThatCorrespondsToQuery = pTagToSearchForFromTagBox2 };
+                foreach (var IdentONEtagCombi in Search2)
+                {
+                    bool subLoopEnteredSomethingInMergedInfo = false;
 
-                         //var MergeSearches = from s1 in Search1
-                         //                    join s2 in Search2 on s1.IdentNr equals s2.IdentNr
-                         //                    select new SearchRelatedInfosMerged(s1.IdentNr, s2.TagInThisFileThatCorrespondsToQuery);
-                         //                    //select new { Nummer = s1.IdentNr, Tags = s2.TagInThisFileThatCorrespondsToQuery };
+                    foreach (var IdentMULTIPLEtagCombi in MergedInfos)
+                    {
+                        if (IdentONEtagCombi.mIdentNr == IdentMULTIPLEtagCombi.mIdentNr)
+                        {
+                            IdentMULTIPLEtagCombi.addTag(IdentONEtagCombi.mOneTagInThisFileThatCorrespondsToQuery);
+                            subLoopEnteredSomethingInMergedInfo = true;
+
+                            // There is only one matching IdentNr in IdentMULTIPLEtagCombi >> work is done for this loop
+                            break;
+                        }
+                    }
+
+                    if (!subLoopEnteredSomethingInMergedInfo)
+                    {
+                        MergedInfos.Add(new SearchRelatedInfosMerged(IdentONEtagCombi.mIdentNr, IdentONEtagCombi.mOneTagInThisFileThatCorrespondsToQuery));
+                    }
+                }
+            }
+            //////////////// 3 TAGS ////////////////
+            else if (amountOfTagsToBeSearchedFor == 3)
+            {
+                // Search for Tag 1
+                var Search1 = from TaggedFiles in mTaggedFileListe
+                              from TagsinTaggedFiles in TaggedFiles.Tags
+                              where TagsinTaggedFiles == pTagToSearchForFromTagBox1
+                              select new SearchRelatedInfosMerged(TaggedFiles.IdentNr, pTagToSearchForFromTagBox1);
+
+                MergedInfos = Search1.ToList();
+
+                // Search for Tag 2
+                var Search2 = from TaggedFiles in mTaggedFileListe
+                              from TagsinTaggedFiles in TaggedFiles.Tags
+                              where TagsinTaggedFiles == pTagToSearchForFromTagBox2
+                              select new SearchRelatedInfosNew() { mIdentNr = TaggedFiles.IdentNr, mOneTagInThisFileThatCorrespondsToQuery = pTagToSearchForFromTagBox2 };
+
+                // Merge Search1 and Search2
+                foreach (var IdentONEtagCombi in Search2)
+                {
+                    bool subLoopEnteredSomethingInMergedInfo = false;
+
+                    foreach (var IdentMULTIPLEtagCombi in MergedInfos)
+                    {
+                        if (IdentONEtagCombi.mIdentNr == IdentMULTIPLEtagCombi.mIdentNr)
+                        {
+                            IdentMULTIPLEtagCombi.addTag(IdentONEtagCombi.mOneTagInThisFileThatCorrespondsToQuery);
+                            subLoopEnteredSomethingInMergedInfo = true;
+
+                            // There is only one matching IdentNr in IdentMULTIPLEtagCombi >> work is done for this loop
+                            break;
+                        }
+                    }
+
+                    if (!subLoopEnteredSomethingInMergedInfo)
+                    {
+                        MergedInfos.Add(new SearchRelatedInfosMerged(IdentONEtagCombi.mIdentNr, IdentONEtagCombi.mOneTagInThisFileThatCorrespondsToQuery));
+                    }
+                }
+
+                // Search for Tag 3
+                var Search3 = from TaggedFiles in mTaggedFileListe
+                              from TagsinTaggedFiles in TaggedFiles.Tags
+                              where TagsinTaggedFiles == pTagToSearchForFromTagBox3
+                              select new SearchRelatedInfosNew() { mIdentNr = TaggedFiles.IdentNr, mOneTagInThisFileThatCorrespondsToQuery = pTagToSearchForFromTagBox3 };
+
+                // Merge Search3 
+                foreach (var IdentONEtagCombi in Search3)
+                {
+                    bool subLoopEnteredSomethingInMergedInfo = false;
+
+                    foreach (var IdentMULTIPLEtagCombi in MergedInfos)
+                    {
+                        if (IdentONEtagCombi.mIdentNr == IdentMULTIPLEtagCombi.mIdentNr)
+                        {
+                            IdentMULTIPLEtagCombi.addTag(IdentONEtagCombi.mOneTagInThisFileThatCorrespondsToQuery);
+                            subLoopEnteredSomethingInMergedInfo = true;
+
+                            // There is only one matching IdentNr in IdentMULTIPLEtagCombi >> work is done for this loop
+                            break;
+                        }
+                    }
+
+                    if (!subLoopEnteredSomethingInMergedInfo)
+                    {
+                        MergedInfos.Add(new SearchRelatedInfosMerged(IdentONEtagCombi.mIdentNr, IdentONEtagCombi.mOneTagInThisFileThatCorrespondsToQuery));
+                    }
+                }
+            }
+
 
 
             return MergedInfos;
