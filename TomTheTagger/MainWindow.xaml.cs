@@ -18,6 +18,55 @@ using System.Collections.ObjectModel;
 
 namespace TomTheTagger
 {
+    /* Datasets */
+    // Place to store data from JSON Database file
+    class TaggedFile
+    {
+        public int IdentNr { get; set; }
+        public string Path { get; set; }
+        public bool Active { get; set; }
+        public IList<string> Tags { get; set; }
+    }
+
+    // Place to store merged search information
+    class SearchRelatedInfosMerged
+    {
+        public int mIdentNr { get; set; }
+        public List<string> mAllTagInThisFileThatCorrespondsToQuery { get; set; }
+
+        // Constructor
+        public SearchRelatedInfosMerged(int pIdentNr, string pTagsToAdd)
+        {
+            mAllTagInThisFileThatCorrespondsToQuery = new List<string>();
+
+            mIdentNr = pIdentNr;
+            mAllTagInThisFileThatCorrespondsToQuery.Add(pTagsToAdd);
+        }
+
+        public void addTag(string pNewTag)
+        {
+            mAllTagInThisFileThatCorrespondsToQuery.Add(pNewTag);
+        }
+    }
+
+    // Place to store NEW search information
+    class SearchRelatedInfosNew
+    {
+        public int mIdentNr { get; set; }
+        public string mOneTagInThisFileThatCorrespondsToQuery { get; set; }
+    }
+
+    // Data for GUI
+    class SearchResultsForGUI
+    {
+        public int IdentNr { get; set; }
+        public string Path { get; set; }
+        public bool Active { get; set; }
+        public List<string> TagsCorrespondingToSearch { get; set; }
+    }
+    
+    
+    /* classes with logic */
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
@@ -33,7 +82,6 @@ namespace TomTheTagger
             InitializeComponent();
             oDataBase.LoadJsonDatabaseFile();
             lvUsers.ItemsSource = oSearchResultsWithCorrespondingTags;
-
         }
 
         private void TagBox1_KeyDown(object sender, KeyEventArgs e)
@@ -46,50 +94,7 @@ namespace TomTheTagger
         }
     }
 
-    // Place to store data from JSON Database file
-    class TaggedFile
-    {
-        public int IdentNr { get; set; }   
-        public string Path { get; set; }
-        public bool Active { get; set; }
-        public IList<string> Tags { get; set; }
-    }
     
-    // Place to store merged search information
-    class SearchRelatedInfosMerged
-    {
-        public int mIdentNr { get; set; }
-        public List<string> mAllTagInThisFileThatCorrespondsToQuery { get; set; }
-
-        // Constructor
-        public SearchRelatedInfosMerged(int pIdentNr, string pTagsToAdd)
-        {
-            mAllTagInThisFileThatCorrespondsToQuery = new List<string>();
-
-            mIdentNr = pIdentNr;
-            mAllTagInThisFileThatCorrespondsToQuery.Add(pTagsToAdd);            
-        }
-
-        public void addTag (string pNewTag)
-        {
-            mAllTagInThisFileThatCorrespondsToQuery.Add(pNewTag);
-        }
-    }
-
-    // Place to store NEW search information
-    class SearchRelatedInfosNew
-    {
-        public int mIdentNr { get; set; }
-        public string mOneTagInThisFileThatCorrespondsToQuery { get; set; }        
-    }
-
-    class SearchResultsForGUI
-    {
-        public int IdentNr { get; set; }
-        public string Path { get; set; }
-        public bool Active { get; set; }
-        public List<string> TagsCorrespondingToSearch { get; set; }
-    }
 
     class DatabaseManager
     {
