@@ -8,19 +8,20 @@
         Title="MainWindow" Height="350" Width="600">
     <DockPanel>
         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Height="40">
-            <TextBox Name="TagBox1" KeyDown="TagBox1_KeyDown" Height="20" Width="100" Margin="20,0,0,0"></TextBox>
-            <TextBox Name="TagBox2" Height="20" Width="100" Margin="20,0,0,0"></TextBox>
-            <TextBox Name="TagBox3" Height="20" Width="100" Margin="20,0,0,0"></TextBox>
-            <TextBox Name="TagBox4" Height="20" Width="100" Margin="20,0,0,0"></TextBox>
+            <TextBox Name="TagBox1" KeyDown="TagBox_KeyDown" Height="20" Width="100" Margin="20,0,0,0"></TextBox>
+            <TextBox Name="TagBox2" KeyDown="TagBox_KeyDown" Height="20" Width="100" Margin="20,0,0,0"></TextBox>
+            <TextBox Name="TagBox3" KeyDown="TagBox_KeyDown" Height="20" Width="100" Margin="20,0,0,0"></TextBox>
+            <TextBox Name="TagBox4" KeyDown="TagBox_KeyDown" Height="20" Width="100" Margin="20,0,0,0"></TextBox>
         </StackPanel>
         <ListView Name="lvUsers">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="ID" Width="40" DisplayMemberBinding="{Binding IdentNr}" />
                     <GridViewColumn Header="Path" Width="400" DisplayMemberBinding="{Binding Path}" />
-                    <GridViewColumn Header="Tag 0" Width="40" DisplayMemberBinding="{Binding TagsCorrespondingToSearch[0]}" />
-                    <GridViewColumn Header="Tag 1" Width="40" DisplayMemberBinding="{Binding TagsCorrespondingToSearch[1]}" />
-                    <GridViewColumn Header="Tag 2" Width="40" DisplayMemberBinding="{Binding TagsCorrespondingToSearch[2]}" />
+                    <GridViewColumn Header="Tag 0" Width="40" DisplayMemberBinding="{Binding Tags[0]}" />
+                    <GridViewColumn Header="Tag 1" Width="40" DisplayMemberBinding="{Binding Tags[1]}" />
+                    <GridViewColumn Header="Tag 2" Width="40" DisplayMemberBinding="{Binding Tags[2]}" />
+                    <GridViewColumn Header="Tag 2" Width="40" DisplayMemberBinding="{Binding Tags[3]}" />
                 </GridView>
             </ListView.View>
         </ListView>
