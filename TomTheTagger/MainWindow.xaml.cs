@@ -90,7 +90,19 @@ namespace TomTheTagger
             if(e.Key == Key.Enter)
             {
                 string[] tagsFromGui = { TagBox1.Text, TagBox2.Text, TagBox3.Text, TagBox4.Text };
-                lvUsers.ItemsSource = oSearchOps.searchForMultipleTags(tagsFromGui, oDataBase.mTaggedFileListe);
+                string[] validTagStringArray = null;
+
+                // Validate string
+                if (!oSearchOps.validateAndOrganizeTags(tagsFromGui, ref validTagStringArray))
+                {
+                    MessageBox.Show("No TAGs to search for");
+                }
+                else
+                {
+                    // Start Search
+                    lvUsers.ItemsSource = oSearchOps.searchForMultipleTags(validTagStringArray, oDataBase.mTaggedFileListe);
+                }
+                
             }
         }
     }
@@ -104,21 +116,13 @@ namespace TomTheTagger
         /// Checks if tags are vaild. Search for tags. Merge all search results. Merge data from database for GUI
         /// </summary>       
         internal List<TaggedFile> searchForMultipleTags(string[] pSearchtagsFromGui, List<TaggedFile> pjsonDatabaseInRam)
-        {   
+        {
             List<identTagPair>[] arrayOfIdentTagPairLists = new List<identTagPair>[10]; // später pSearchtagsFromGui.Length()
-            int amountOfTagsToBeSearchedFor = 0;
 
-            // Check if Tags are valid and count
-            foreach (var item in pSearchtagsFromGui){
-                if (item.Length != 0){
-                    amountOfTagsToBeSearchedFor++;
-                }
-            }
-
-            //if(amountOfTagsToBeSearchedFor == 0) // Schlau abbrechen
+            int pAmountOfTagsToBeSearchedFor = pSearchtagsFromGui.Length;
 
             // Excecute a search for every tag
-            for (int i = 0; i < amountOfTagsToBeSearchedFor; i++)
+            for (int i = 0; i < pAmountOfTagsToBeSearchedFor; i++)
             {
                 arrayOfIdentTagPairLists[i] = searchForOneTag(pSearchtagsFromGui[i], pjsonDatabaseInRam);
                 //if( arrayOfIdentTagPairLists[0].Count == 0) // Kein Tag gefunden > Daten nicht und nicht mergen
@@ -128,13 +132,51 @@ namespace TomTheTagger
             List<identAndMultipleTags> identAndMultipleTagsList = initIdentAndMultipleTagsList(arrayOfIdentTagPairLists[0]);
 
             // merge all identTagPairs to List<identAndMultipleTags>
-            for (int i = 1; i < amountOfTagsToBeSearchedFor; i++)
+            for (int i = 1; i < pAmountOfTagsToBeSearchedFor; i++)
             {
                 mergeOneIdentTagPair(arrayOfIdentTagPairLists[i], identAndMultipleTagsList);
             }
 
             //Merge Database information and identAndMultipleTagsList together
             return mergeDatabaseAndSearchResults(identAndMultipleTagsList, pjsonDatabaseInRam);
+
+        }
+
+        internal bool validateAndOrganizeTags (string[] ptagsFromGUI, ref string[] pValidTagString)
+        {
+
+            List<string> localTagsFromGuiList = new List<string>(ptagsFromGUI);
+            List<string> tagListWithoutDublicates = new List<string>();
+
+            // remove all elements which are null
+            localTagsFromGuiList.RemoveAll(q => q == "");
+                        
+            if(localTagsFromGuiList.Count == 0)
+            {
+                // Nothing to search for
+                return false;
+            }
+
+            // Remove dublicates
+            tagListWithoutDublicates = localTagsFromGuiList.Distinct().ToList();
+
+            pValidTagString = tagListWithoutDublicates.ToArray<string>();
+
+            return true;
+
+            //string[] Test1 = { "", "", "ARD", "", "ZDF", "", "ZDF", "USA", "ARD", "ARD" , "USA" };
+            ////string[] Test2 = new string[];
+
+            //List<string> TestList = new List<string>();
+
+            //List<string> TestRemovedDublicates = new List<string>();
+
+            //TestList = Test1.ToList<string>();
+
+            //TestList.RemoveAll(q => q == "");
+
+            //TestRemovedDublicates = TestList.Distinct().ToList();
+
 
         }
 
