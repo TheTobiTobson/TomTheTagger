@@ -108,12 +108,12 @@ namespace TomTheTagger
     }
 
     /// <summary>
-    /// Implements all functions to execute a search and merge results
+    /// Implements all functions to execute a search and merge results. Class does not change database content
     /// </summary>
     public class SearchOperations
     {
         /// <summary>
-        /// Checks if tags are vaild. Search for tags. Merge all search results. Merge data from database for GUI
+        /// Merge all search results. Merge data from database for GUI
         /// </summary>       
         internal List<TaggedFile> searchForMultipleTags(string[] pSearchtagsFromGui, List<TaggedFile> pjsonDatabaseInRam)
         {
@@ -142,6 +142,9 @@ namespace TomTheTagger
 
         }
 
+        /// <summary>
+        ///  Remove all null elements, Remove dubplicates, Check if length is > 0 
+        /// </summary>
         internal bool validateAndOrganizeTags (string[] ptagsFromGUI, ref string[] pValidTagString)
         {
 
@@ -259,7 +262,7 @@ namespace TomTheTagger
     }
 
     /// <summary>
-    /// Loads json database file to RAM and offers access to the rest of the assembly
+    /// Loads json database file and sets Tags. Class changes database
     /// </summary>
     class DatabaseManager
     {
