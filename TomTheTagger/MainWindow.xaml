@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TomTheTagger"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="600">
+        Title="MainWindow" Height="388.583" Width="635.827">
     <DockPanel>
         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Height="40">
             <TextBox Name="TagBox1" KeyDown="TagBox_KeyDown" Height="20" Width="100" Margin="20,0,0,0"></TextBox>

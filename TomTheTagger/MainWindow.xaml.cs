@@ -285,5 +285,30 @@ namespace TomTheTagger
             string JsonDatabaseFileInString = File.ReadAllText(mDatabaseLocation);
             mTaggedFileListe = JsonConvert.DeserializeObject<List<TaggedFile>>(JsonDatabaseFileInString);
         }
+
+        public void setTagsInDatabase (string[] pTagsToBeAddedToDatabase, TaggedFile pFileToBeAddedToDatabase)
+        {
+            //var Search = from TaggedFile in mTaggedFileListe
+            //             where TaggedFile.Path == pFileToBeAddedToDatabase.Path
+            //             select TaggedFile.Tags.Add(pTagsToBeAddedToDatabase[0]);
+
+            var item = mTaggedFileListe.FirstOrDefault(m => m.Path == pFileToBeAddedToDatabase.Path);
+
+            if (item == null)
+            {
+                Console.WriteLine("Datei befindet sich bisher NICHT in der Sammlung");
+            }
+            else
+            {
+                Console.WriteLine("Datei befindet sich in der Sammlung");
+            }
+
+            //foreach (var TagToAdd in pTagsToBeAddedToDatabase)
+            //{
+            //    item.Tags.Add(TagToAdd);
+            //}
+            
+
+        }
     }
 }
