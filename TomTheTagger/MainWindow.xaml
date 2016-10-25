@@ -6,24 +6,65 @@
         xmlns:local="clr-namespace:TomTheTagger"
         mc:Ignorable="d"
         Title="MainWindow" Height="388.583" Width="635.827">
-    <DockPanel>
-        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Height="40">
-            <TextBox Name="TagBox1" KeyDown="TagBox_KeyDown" Height="20" Width="100" Margin="20,0,0,0"></TextBox>
-            <TextBox Name="TagBox2" KeyDown="TagBox_KeyDown" Height="20" Width="100" Margin="20,0,0,0"></TextBox>
-            <TextBox Name="TagBox3" KeyDown="TagBox_KeyDown" Height="20" Width="100" Margin="20,0,0,0"></TextBox>
-            <TextBox Name="TagBox4" KeyDown="TagBox_KeyDown" Height="20" Width="100" Margin="20,0,0,0"></TextBox>
-        </StackPanel>
-        <ListView Name="lvUsers">
-            <ListView.View>
-                <GridView>
-                    <GridViewColumn Header="ID" Width="40" DisplayMemberBinding="{Binding IdentNr}" />
-                    <GridViewColumn Header="Path" Width="400" DisplayMemberBinding="{Binding Path}" />
-                    <GridViewColumn Header="Tag 0" Width="40" DisplayMemberBinding="{Binding Tags[0]}" />
-                    <GridViewColumn Header="Tag 1" Width="40" DisplayMemberBinding="{Binding Tags[1]}" />
-                    <GridViewColumn Header="Tag 2" Width="40" DisplayMemberBinding="{Binding Tags[2]}" />
-                    <GridViewColumn Header="Tag 2" Width="40" DisplayMemberBinding="{Binding Tags[3]}" />
-                </GridView>
-            </ListView.View>
-        </ListView>
-    </DockPanel>
+    <Grid>
+        <TabControl>
+            <TabItem Header="Search">
+                <DockPanel>
+                    <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Height="40">
+                        <TextBox Name="TagBox1" KeyDown="TagBox_KeyDown" Height="20" Width="100" Margin="20,0,0,0"></TextBox>
+                        <TextBox Name="TagBox2" KeyDown="TagBox_KeyDown" Height="20" Width="100" Margin="20,0,0,0"></TextBox>
+                        <TextBox Name="TagBox3" KeyDown="TagBox_KeyDown" Height="20" Width="100" Margin="20,0,0,0"></TextBox>
+                        <TextBox Name="TagBox4" KeyDown="TagBox_KeyDown" Height="20" Width="100" Margin="20,0,0,0"></TextBox>
+                    </StackPanel>
+                    <ListView Name="lvUsers">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="ID" Width="40" DisplayMemberBinding="{Binding IdentNr}" />
+                                <GridViewColumn Header="Path" Width="400" DisplayMemberBinding="{Binding Path}" />
+                                <GridViewColumn Header="Tag 0" Width="40" DisplayMemberBinding="{Binding Tags[0]}" />
+                                <GridViewColumn Header="Tag 1" Width="40" DisplayMemberBinding="{Binding Tags[1]}" />
+                                <GridViewColumn Header="Tag 2" Width="40" DisplayMemberBinding="{Binding Tags[2]}" />
+                                <GridViewColumn Header="Tag 2" Width="40" DisplayMemberBinding="{Binding Tags[3]}" />
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </DockPanel>
+            </TabItem>
+            <TabItem Header="Set Tags">
+                <DockPanel>
+                    <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
+                        <Label Content="C:\TobiData\Kontoauszüge.docx" Width="500"></Label>
+                        <Button Margin="20,0,0,0" Width="95" Height="30">Datei auswählen</Button>
+                    </StackPanel>
+                    <StackPanel Orientation="Vertical" DockPanel.Dock="Left" Width="225">
+                        <StackPanel Orientation="Horizontal"  Margin="0,20,0,0">
+                            <TextBox Name="TextboxAddTag_Tab2_Name" Height="25" Width="100" Margin="0,0,10,0" KeyDown="TagBoxAddTags_Tab2_KeyDown"></TextBox>
+                            <Button Click="ButtonAddTag_Tab2_Click" Width="55" Height="25" Margin="0,0,50,0">Add Tag</Button>
+                        </StackPanel>                       
+                    </StackPanel>
+                    <StackPanel Orientation="Vertical" DockPanel.Dock="Right" >
+                        <StackPanel Orientation="Horizontal" Margin="0,20,0,0">
+                            <TextBox IsReadOnly="True" Height="25" Width="100" Margin="0,0,10,0" Text="{Binding Path=txtArray[0]}"></TextBox>
+                            <Button Width="45" Height="25" Margin="0,0,50,0" Tag="Button0" Click="ButtonRemoveTag_Tab2_Click">- Tag</Button>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,20,0,0">
+                            <TextBox IsReadOnly="True" Height="25" Width="100" Margin="0,0,10,0" Text="{Binding Path=txtArray[1]}"></TextBox>
+                            <Button Width="45" Height="25" Margin="0,0,50,0" Tag="Button1" Click="ButtonRemoveTag_Tab2_Click" Content="- Tag"/>                           
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,20,0,0">
+                            <TextBox IsReadOnly="True" Height="25" Width="100" Margin="0,0,10,0" Text="{Binding Path=txtArray[2]}"></TextBox>
+                            <Button Width="45" Height="25" Margin="0,0,50,0" Tag="Button2" Click="ButtonRemoveTag_Tab2_Click">- Tag</Button>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,20,0,0">
+                            <TextBox IsReadOnly="True" Height="25" Width="100" Margin="0,0,10,0" Text="{Binding Path=txtArray[3]}"></TextBox>
+                            <Button Width="45" Height="25" Margin="0,0,50,0" Tag="Button3" Click="ButtonRemoveTag_Tab2_Click">- Tag</Button>
+                            <TextBox IsReadOnly="True" Height="25" Width="100" Margin="0,0,10,0"></TextBox>
+                            <Button Width="45" Height="25">- Tag</Button>
+                        </StackPanel>
+                    </StackPanel>
+                </DockPanel>
+            </TabItem>
+            <TabItem Header="Settings" />
+        </TabControl>
+    </Grid>
 </Window>

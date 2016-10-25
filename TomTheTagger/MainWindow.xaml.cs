@@ -15,6 +15,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Newtonsoft.Json;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 
 namespace TomTheTagger
 {
@@ -58,7 +59,6 @@ namespace TomTheTagger
             mAllTagInThisFileThatCorrespondsToQuery.Add(pTagsToAdd);
         }
 
-
         public void addTag(string pNewTag)
         {
             mAllTagInThisFileThatCorrespondsToQuery.Add(pNewTag);
@@ -75,11 +75,14 @@ namespace TomTheTagger
     {
         DatabaseManager oDataBase = new DatabaseManager("JSONTestData.txt");
         SearchOperations oSearchOps = new SearchOperations();
-        
+        guiDataViewModel objGuiDataViewModel = new guiDataViewModel();
+
         public MainWindow()
         {
             InitializeComponent();
-            oDataBase.LoadJsonDatabaseFile();
+            this.DataContext = objGuiDataViewModel;
+
+            oDataBase.LoadJsonDatabaseFile();            
         }
 
         /// <summary>
@@ -103,6 +106,48 @@ namespace TomTheTagger
                     lvUsers.ItemsSource = oSearchOps.searchForMultipleTags(validTagStringArray, oDataBase.mTaggedFileListe);
                 }
                 
+            }
+        }
+                    
+        private void ButtonAddTag_Tab2_Click(object sender, RoutedEventArgs e)
+        {
+            objGuiDataViewModel.setTag(TextboxAddTag_Tab2_Name.Text);
+            TextboxAddTag_Tab2_Name.Text = "";
+        }
+
+        private void ButtonRemoveTag_Tab2_Click(object sender, RoutedEventArgs e)
+        {
+            var buttonValue = ((Button)sender).Tag;
+            string buttonNumber = buttonValue.ToString();
+
+            switch (buttonNumber)
+            {
+                case "Button0":
+                    objGuiDataViewModel.removeTag(0);
+                    break;
+                case "Button1":
+                    objGuiDataViewModel.removeTag(1);
+                    break;
+                case "Button2":
+                    objGuiDataViewModel.removeTag(2);
+                    break;
+                case "Button3":
+                    objGuiDataViewModel.removeTag(3);
+                    break;
+                default:
+                {
+                    MessageBox.Show("Buttonnummer nicht korrekt");
+                    break;
+                }
+            }            
+        }
+
+        private void TagBoxAddTags_Tab2_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                objGuiDataViewModel.setTag(TextboxAddTag_Tab2_Name.Text);
+                TextboxAddTag_Tab2_Name.Text = "";
             }
         }
     }
@@ -311,4 +356,74 @@ namespace TomTheTagger
 
         }
     }
+
+    public class guiDataViewModel : INotifyPropertyChanged
+    {
+        private TaggedFile localGuiDataSet = new TaggedFile();
+
+        string[] emptyArray = {"", "", "", "", "", "", "", "", "", "" };
+
+        public guiDataViewModel()
+        {
+            localGuiDataSet.Tags = new List<string>();
+
+        }
+
+        /// <summary>
+        /// Path get/set
+        /// </summary>
+        public string txtPath
+        {
+            get { return localGuiDataSet.Path; }
+            set
+            {
+                localGuiDataSet.Path = value;
+                Notify("txtPath");
+            }
+        }
+
+        public string[] txtArray
+        {
+            get
+            {
+                if (localGuiDataSet.Tags.Count > 0)
+                {
+                    return localGuiDataSet.Tags.ToArray();
+                }
+                else
+                {
+                    return emptyArray;
+                }
+            }
+            set { }
+        }
+       
+        public void setTag(string pNewTagToAdd)
+        {            
+            localGuiDataSet.Tags.Add(pNewTagToAdd);
+            Notify("txtArray");
+        }
+
+        public void removeTag(int pIndexNr)
+        {
+            if(localGuiDataSet.Tags.Count > pIndexNr)
+            {
+                localGuiDataSet.Tags.RemoveAt(pIndexNr);
+                Notify("txtArray");
+            }            
+        }
+
+        /// <summary>
+        /// Notify client that value has been changed
+        /// </summary>
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void Notify(string argument)
+        {
+            if (this.PropertyChanged != null)
+            {
+                this.PropertyChanged(this, new PropertyChangedEventArgs(argument));
+            }
+        }
+    }
+
 }
