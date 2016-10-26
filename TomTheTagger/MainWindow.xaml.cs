@@ -68,6 +68,7 @@ namespace TomTheTagger
     public class guiRemoveTagControls
     {
         public string ButtonNumber { get; set; }
+        public string TagBoxNumber { get; set; }
     }
     
     /*** Classes with logic ***/
@@ -408,7 +409,7 @@ namespace TomTheTagger
 
                 for (int i = 0; i < localGuiDataSet.Tags.Count; i++)
                 {
-                    localGuiRemoveTagControls.Add(new guiRemoveTagControls() { ButtonNumber = i.ToString() });
+                    localGuiRemoveTagControls.Add(new guiRemoveTagControls() { ButtonNumber = i.ToString(), TagBoxNumber = localGuiDataSet.Tags[i] });
                 }
             }
         }
@@ -428,7 +429,6 @@ namespace TomTheTagger
                 localGuiDataSet.Tags.Add(pNewTagToAdd);
                 adaptguiRemoveTagControls();
                 Notify("txtArray");
-                Notify("listRemoveTags");
             }            
         }
 
@@ -439,7 +439,6 @@ namespace TomTheTagger
                 localGuiDataSet.Tags.RemoveAt(pIndexNr);
                 adaptguiRemoveTagControls();
                 Notify("txtArray");
-                Notify("listRemoveTags");
             }            
         }
 

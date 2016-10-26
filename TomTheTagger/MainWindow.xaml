@@ -45,7 +45,7 @@
                     <DockPanel>                        
                         <StackPanel DockPanel.Dock="Left">
                             <StackPanel Orientation="Horizontal" Margin="0,20,0,0" Width="164">
-                                <TextBox IsReadOnly="True" Height="25" Width="100" Margin="0,0,10,0" Text="{Binding Path=txtArray[0]}"></TextBox>
+                                <TextBox IsReadOnly="True" Height="25" Width="100" Margin="0,0,10,0" Text="{Binding txtArray[0]}"></TextBox>
                                 <Button Width="45" Height="25" Margin="0,0,50,0" Tag="0" Click="ButtonRemoveTag_Tab2_Click">- Tag</Button>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal" Margin="0,20,0,0" Width="172">
@@ -67,13 +67,11 @@
                         </StackPanel>
                         <StackPanel>
                             <StackPanel Orientation="Horizontal" Margin="0,20,0,0" Width="164">
-                                <!--<ItemsControl ItemsSource="{Binding objguiRemoveTagControls}">-->
-                                <!--<ItemsControl Name="icTodoList">-->
                                 <ItemsControl ItemsSource="{Binding Path=listRemoveTags}">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
                                             <StackPanel Orientation="Horizontal" Margin="0,20,0,0" Width="164">
-                                                <TextBox IsReadOnly="True" Height="25" Width="100" Margin="0,0,10,0"></TextBox>
+                                                <TextBox IsReadOnly="True" Height="25" Width="100" Margin="0,0,10,0" Text="{Binding TagBoxNumber}"></TextBox>
                                                 <Button Width="45" Height="25" Margin="0,0,50,0" Tag="{Binding ButtonNumber}" Click="ButtonRemoveTag_Tab2_Click">- Tag</Button>
                                             </StackPanel>
                                         </DataTemplate>
