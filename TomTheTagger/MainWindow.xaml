@@ -33,8 +33,8 @@
             <TabItem Header="Set Tags">
                 <DockPanel>
                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
-                        <Label Content="C:\TobiData\Kontoauszüge.docx" Width="405" Margin="0,0,20,0"></Label>
-                        <Button Margin="20,0,0,0" Width="110" Height="25">Datei auswählen</Button>
+                        <Label Content="{Binding txtPath}" Width="405" Margin="0,0,20,0"></Label>
+                        <Button Margin="20,0,0,0" Width="110" Height="25" Click="ButtonOpenFile_Tab2_Click">Datei auswählen</Button>
                     </StackPanel>
                     <StackPanel Orientation="Vertical" DockPanel.Dock="Left" Width="225">
                         <StackPanel Orientation="Horizontal"  Margin="0,20,0,0">
@@ -42,7 +42,7 @@
                             <Button Click="ButtonAddTag_Tab2_Click" Height="25" Width="55" Margin="0,0,0,0">+ Tag</Button>
                         </StackPanel>
                         <StackPanel>
-                            <Button Click="ButtonAddTag_Tab2_Click" Height="25" Width="155" Margin="0,20,0,0" HorizontalAlignment="Left">Speichern</Button>
+                            <Button Click="ButtonSaveTags_Tab2_Click" Height="25" Width="155" Margin="0,20,0,0" HorizontalAlignment="Left">Speichern</Button>
                         </StackPanel>
                          
                     </StackPanel>

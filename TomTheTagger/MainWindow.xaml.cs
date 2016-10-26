@@ -16,6 +16,7 @@ using System.Windows.Shapes;
 using Newtonsoft.Json;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using Microsoft.Win32;
 
 namespace TomTheTagger
 {
@@ -156,6 +157,19 @@ namespace TomTheTagger
                 objGuiDataViewModel.setTag(TextboxAddTag_Tab2_Name.Text);
                 TextboxAddTag_Tab2_Name.Text = "";
             }
+        }
+
+        private void ButtonOpenFile_Tab2_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            if (openFileDialog.ShowDialog() == true)
+                objGuiDataViewModel.txtPath = openFileDialog.FileName;
+
+        }
+
+        private void ButtonSaveTags_Tab2_Click(object sender, RoutedEventArgs e)
+        {
+            objGuiDataViewModel.saveTagsToDatabase(oDataBase);
         }
     }
 
@@ -338,39 +352,29 @@ namespace TomTheTagger
             mTaggedFileListe = JsonConvert.DeserializeObject<List<TaggedFile>>(JsonDatabaseFileInString);
         }
 
-        public void setTagsInDatabase (string[] pTagsToBeAddedToDatabase, TaggedFile pFileToBeAddedToDatabase)
+        public void setTagsInDatabase (TaggedFile pFileWithTagsToBeSavedInDatabase)
         {
-            //var Search = from TaggedFile in mTaggedFileListe
-            //             where TaggedFile.Path == pFileToBeAddedToDatabase.Path
-            //             select TaggedFile.Tags.Add(pTagsToBeAddedToDatabase[0]);
+            var item = mTaggedFileListe.FirstOrDefault(m => m.Path == pFileWithTagsToBeSavedInDatabase.Path);
 
-            var item = mTaggedFileListe.FirstOrDefault(m => m.Path == pFileToBeAddedToDatabase.Path);
-
-            if (item == null)
+            if (item == null) 
             {
-                Console.WriteLine("Datei befindet sich bisher NICHT in der Sammlung");
+                MessageBox.Show("Datei befindet sich bisher NICHT in der Sammlung");
             }
             else
             {
-                Console.WriteLine("Datei befindet sich in der Sammlung");
+                MessageBox.Show("Datei befindet sich in der Sammlung");
             }
-
-            //foreach (var TagToAdd in pTagsToBeAddedToDatabase)
-            //{
-            //    item.Tags.Add(TagToAdd);
-            //}
-            
-
         }
     }
 
     public class guiDataViewModel : INotifyPropertyChanged
     {        
         private TaggedFile localGuiDataSet;
-        ObservableCollection<guiRemoveTagControls> localGuiRemoveTagControls;
+        internal ObservableCollection<guiRemoveTagControls> localGuiRemoveTagControls;
 
-        string[] emptyArray = {"", "", "", "", "", "", "", "", "", "" };
-
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public guiDataViewModel()
         {
             localGuiDataSet = new TaggedFile();
@@ -430,20 +434,45 @@ namespace TomTheTagger
             set { }
         }
 
-
-        public void setTag(string pNewTagToAdd)
+        /// <summary>
+        /// Set one tag to localGuiDataSet 
+        /// </summary>
+        internal void setTag(string pNewTagToAdd)
         { 
                 localGuiDataSet.Tags.Add(pNewTagToAdd);
-                adaptguiRemoveTagControls();              
+                adaptguiRemoveTagControls();            
         }
 
-        public void removeTag(int pIndexNr)
+        /// <summary>
+        /// Set a specific tag from localGuiDataSet 
+        /// </summary>
+        internal void removeTag(int pIndexNr)
         {
             if(localGuiDataSet.Tags.Count > pIndexNr)
             {
                 localGuiDataSet.Tags.RemoveAt(pIndexNr);
                 adaptguiRemoveTagControls();
             }            
+        }
+
+        internal void saveTagsToDatabase(DatabaseManager pDataBase)
+        {
+            if(localGuiDataSet.Tags.Count > 0)
+            {
+                if (localGuiDataSet.Path != null)
+                {
+                    pDataBase.setTagsInDatabase(localGuiDataSet);
+                }
+                else
+                {
+                    MessageBox.Show("Keine Datei ausgewählt");
+                }
+
+            }
+            else
+            {
+                MessageBox.Show("Keine Tags gesetzt");
+            }
         }
 
         /// <summary>
