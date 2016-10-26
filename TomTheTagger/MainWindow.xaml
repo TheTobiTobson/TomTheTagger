@@ -33,53 +33,38 @@
             <TabItem Header="Set Tags">
                 <DockPanel>
                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
-                        <Label Content="C:\TobiData\Kontoauszüge.docx" Width="500"></Label>
-                        <Button Margin="20,0,0,0" Width="95" Height="30">Datei auswählen</Button>
+                        <Label Content="C:\TobiData\Kontoauszüge.docx" Width="405" Margin="0,0,20,0"></Label>
+                        <Button Margin="20,0,0,0" Width="110" Height="25">Datei auswählen</Button>
                     </StackPanel>
                     <StackPanel Orientation="Vertical" DockPanel.Dock="Left" Width="225">
                         <StackPanel Orientation="Horizontal"  Margin="0,20,0,0">
-                            <TextBox Name="TextboxAddTag_Tab2_Name" Height="25" Width="100" Margin="0,0,10,0" KeyDown="TagBoxAddTags_Tab2_KeyDown"></TextBox>
-                            <Button Click="ButtonAddTag_Tab2_Click" Width="55" Height="25" Margin="0,0,50,0">Add Tag</Button>
-                        </StackPanel>                       
-                    </StackPanel>
-                    <DockPanel>                        
-                        <StackPanel DockPanel.Dock="Left">
-                            <StackPanel Orientation="Horizontal" Margin="0,20,0,0" Width="164">
-                                <TextBox IsReadOnly="True" Height="25" Width="100" Margin="0,0,10,0" Text="{Binding txtArray[0]}"></TextBox>
-                                <Button Width="45" Height="25" Margin="0,0,50,0" Tag="0" Click="ButtonRemoveTag_Tab2_Click">- Tag</Button>
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal" Margin="0,20,0,0" Width="172">
-                                <TextBox IsReadOnly="True" Height="25" Width="100" Margin="0,0,10,0" Text="{Binding Path=txtArray[1]}"></TextBox>
-                                <Button Width="45" Height="25" Margin="0,0,50,0" Tag="1" Click="ButtonRemoveTag_Tab2_Click" Content="- Tag"/>                           
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal" Margin="0,20,0,0" Width="168">
-                                <TextBox IsReadOnly="True" Height="25" Width="100" Margin="0,0,10,0" Text="{Binding Path=txtArray[2]}"></TextBox>
-                                <Button Width="45" Height="25" Margin="0,0,50,0" Tag="2" Click="ButtonRemoveTag_Tab2_Click">- Tag</Button>
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal" Margin="0,20,0,0" Width="167">
-                                <TextBox IsReadOnly="True" Height="25" Width="100" Margin="0,0,10,0" Text="{Binding Path=txtArray[3]}"></TextBox>
-                                <Button Width="45" Height="25" Margin="0,0,50,0" Tag="3" Click="ButtonRemoveTag_Tab2_Click">- Tag</Button>
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal" Margin="0,20,0,0" Width="163">
-                                <TextBox IsReadOnly="True" Height="25" Width="100" Margin="0,0,10,0" Text="{Binding Path=txtArray[4]}"></TextBox>
-                                <Button Width="45" Height="25" Margin="0,0,50,0" Tag="4" Click="ButtonRemoveTag_Tab2_Click">- Tag</Button>
-                            </StackPanel>
+                            <TextBox Name="TextboxAddTag_Tab2_Name" Height="25" Width="100" KeyDown="TagBoxAddTags_Tab2_KeyDown"></TextBox>
+                            <Button Click="ButtonAddTag_Tab2_Click" Height="25" Width="55" Margin="0,0,0,0">+ Tag</Button>
                         </StackPanel>
                         <StackPanel>
-                            <StackPanel Orientation="Horizontal" Margin="0,20,0,0" Width="164">
-                                <ItemsControl ItemsSource="{Binding Path=listRemoveTags}">
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
-                                            <StackPanel Orientation="Horizontal" Margin="0,20,0,0" Width="164">
-                                                <TextBox IsReadOnly="True" Height="25" Width="100" Margin="0,0,10,0" Text="{Binding TagBoxNumber}"></TextBox>
-                                                <Button Width="45" Height="25" Margin="0,0,50,0" Tag="{Binding ButtonNumber}" Click="ButtonRemoveTag_Tab2_Click">- Tag</Button>
-                                            </StackPanel>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
-                            </StackPanel>
+                            <Button Click="ButtonAddTag_Tab2_Click" Height="25" Width="155" Margin="0,20,0,0" HorizontalAlignment="Left">Speichern</Button>
                         </StackPanel>
-                    </DockPanel>
+                         
+                    </StackPanel>
+                    <StackPanel>
+                        <ItemsControl ItemsSource="{Binding Path=listRemoveTags}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal" Margin="0,20,0,0">
+                                        <TextBox IsReadOnly="True" Height="25" Width="100" Text="{Binding TagBoxNumber}"></TextBox>
+                                        <Button Width="55" Height="25" Margin="0,0,20,0" Tag="{Binding ButtonNumber}" Click="ButtonRemoveTag_Tab2_Click">- Tag</Button>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                    <!--</StackPanel>-->
+                    <!--</DockPanel>-->
                 </DockPanel>
             </TabItem>
             <TabItem Header="Settings" />

@@ -65,6 +65,9 @@ namespace TomTheTagger
         }
     }
 
+    /// <summary>
+    /// Class used to render dynamic TAG controls (Textboxes and buttons)
+    /// </summary>
     public class guiRemoveTagControls
     {
         public string ButtonNumber { get; set; }
@@ -91,7 +94,7 @@ namespace TomTheTagger
         }
 
         /// <summary>
-        /// Method is called after keydown in tagbox
+        /// Tagbox in Tab1
         /// </summary>
         private void TagBox_KeyDown(object sender, KeyEventArgs e)
         {
@@ -113,13 +116,19 @@ namespace TomTheTagger
                 
             }
         }
-                    
+
+        /// <summary>
+        /// Button Add Tag in Tab2
+        /// </summary>        
         private void ButtonAddTag_Tab2_Click(object sender, RoutedEventArgs e)
         {           
             objGuiDataViewModel.setTag(TextboxAddTag_Tab2_Name.Text);
             TextboxAddTag_Tab2_Name.Text = "";
         }
 
+        /// <summary>
+        /// Button Remove Tag in Tab2
+        /// </summary>
         private void ButtonRemoveTag_Tab2_Click(object sender, RoutedEventArgs e)
         {
             int ButtonInt = -1;
@@ -137,6 +146,9 @@ namespace TomTheTagger
             }              
         }
 
+        /// <summary>
+        /// Keydown in Add Tag in Tab2
+        /// </summary>
         private void TagBoxAddTags_Tab2_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
@@ -353,23 +365,30 @@ namespace TomTheTagger
     }
 
     public class guiDataViewModel : INotifyPropertyChanged
-    {
-        private TaggedFile localGuiDataSet = new TaggedFile();
-        ObservableCollection<guiRemoveTagControls> localGuiRemoveTagControls = new ObservableCollection<guiRemoveTagControls>();
+    {        
+        private TaggedFile localGuiDataSet;
+        ObservableCollection<guiRemoveTagControls> localGuiRemoveTagControls;
 
         string[] emptyArray = {"", "", "", "", "", "", "", "", "", "" };
 
         public guiDataViewModel()
         {
+            localGuiDataSet = new TaggedFile();
             localGuiDataSet.Tags = new List<string>();
 
-            //localGuiRemoveTagControls.Add(new guiRemoveTagControls() { ButtonNumber = "0" });
-            //localGuiRemoveTagControls.Add(new guiRemoveTagControls() { ButtonNumber = "1" });
-            //localGuiRemoveTagControls.Add(new guiRemoveTagControls() { ButtonNumber = "2" });
-            //localGuiRemoveTagControls.Add(new guiRemoveTagControls() { ButtonNumber = "Button1" });
-            //localGuiRemoveTagControls.Add(new guiRemoveTagControls() { ButtonNumber = "Button2" });
-            //localGuiRemoveTagControls.Add(new guiRemoveTagControls() { ButtonNumber = "Button2" });
-            //localGuiRemoveTagControls.Add(new guiRemoveTagControls() { ButtonNumber = "Button2" });
+            localGuiRemoveTagControls = new ObservableCollection<guiRemoveTagControls>();
+
+            //localGuiRemoveTagControls.Add(new guiRemoveTagControls() { ButtonNumber = "1", TagBoxNumber = "test" });
+            //localGuiRemoveTagControls.Add(new guiRemoveTagControls() { ButtonNumber = "1", TagBoxNumber = "test" });
+            //localGuiRemoveTagControls.Add(new guiRemoveTagControls() { ButtonNumber = "1", TagBoxNumber = "test" });
+            //localGuiRemoveTagControls.Add(new guiRemoveTagControls() { ButtonNumber = "1", TagBoxNumber = "test" });
+            //localGuiRemoveTagControls.Add(new guiRemoveTagControls() { ButtonNumber = "1", TagBoxNumber = "test" });
+            //localGuiRemoveTagControls.Add(new guiRemoveTagControls() { ButtonNumber = "1", TagBoxNumber = "test" });
+            //localGuiRemoveTagControls.Add(new guiRemoveTagControls() { ButtonNumber = "1", TagBoxNumber = "test" });
+            //localGuiRemoveTagControls.Add(new guiRemoveTagControls() { ButtonNumber = "1", TagBoxNumber = "test" });
+            //localGuiRemoveTagControls.Add(new guiRemoveTagControls() { ButtonNumber = "1", TagBoxNumber = "test" });
+            //localGuiRemoveTagControls.Add(new guiRemoveTagControls() { ButtonNumber = "1", TagBoxNumber = "test" });
+
         }
 
         /// <summary>
@@ -384,23 +403,10 @@ namespace TomTheTagger
                 Notify("txtPath");
             }
         }
-
-        public string[] txtArray
-        {
-            get
-            {
-                if (localGuiDataSet.Tags.Count > 0)
-                {
-                    return localGuiDataSet.Tags.ToArray();
-                }
-                else
-                {
-                    return emptyArray;
-                }
-            }
-            set { }
-        }
-
+        
+        /// <summary>
+        /// Make sure that all tags are available in localGuiRemoveTagControls (to be rendered in itemsControl)
+        /// </summary>
         internal void adaptguiRemoveTagControls()
         {
             if(localGuiDataSet.Tags.Count != localGuiRemoveTagControls.Count)
@@ -414,7 +420,9 @@ namespace TomTheTagger
             }
         }
 
-
+        /// <summary>
+        /// listRemoveTags is DataSource for ItemsControl
+        /// </summary>
         public ObservableCollection<guiRemoveTagControls> listRemoveTags
         {
             get
@@ -422,14 +430,11 @@ namespace TomTheTagger
             set { }
         }
 
+
         public void setTag(string pNewTagToAdd)
-        {            
-            if(localGuiDataSet.Tags.Count < 5)
-            {
+        { 
                 localGuiDataSet.Tags.Add(pNewTagToAdd);
-                adaptguiRemoveTagControls();
-                Notify("txtArray");
-            }            
+                adaptguiRemoveTagControls();              
         }
 
         public void removeTag(int pIndexNr)
@@ -438,7 +443,6 @@ namespace TomTheTagger
             {
                 localGuiDataSet.Tags.RemoveAt(pIndexNr);
                 adaptguiRemoveTagControls();
-                Notify("txtArray");
             }            
         }
 
