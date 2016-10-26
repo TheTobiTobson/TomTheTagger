@@ -64,10 +64,13 @@ namespace TomTheTagger
             mAllTagInThisFileThatCorrespondsToQuery.Add(pNewTag);
         }
     }
-    
-    
 
-    /*** Classes with logic ***/      
+    public class guiRemoveTagControls
+    {
+        public string ButtonNumber { get; set; }
+    }
+    
+    /*** Classes with logic ***/
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
@@ -75,11 +78,12 @@ namespace TomTheTagger
     {
         DatabaseManager oDataBase = new DatabaseManager("JSONTestData.txt");
         SearchOperations oSearchOps = new SearchOperations();
-        guiDataViewModel objGuiDataViewModel = new guiDataViewModel();
+        guiDataViewModel objGuiDataViewModel = new guiDataViewModel();        
 
         public MainWindow()
         {
-            InitializeComponent();
+            InitializeComponent();            
+            
             this.DataContext = objGuiDataViewModel;
 
             oDataBase.LoadJsonDatabaseFile();            
@@ -110,36 +114,26 @@ namespace TomTheTagger
         }
                     
         private void ButtonAddTag_Tab2_Click(object sender, RoutedEventArgs e)
-        {
+        {           
             objGuiDataViewModel.setTag(TextboxAddTag_Tab2_Name.Text);
             TextboxAddTag_Tab2_Name.Text = "";
         }
 
         private void ButtonRemoveTag_Tab2_Click(object sender, RoutedEventArgs e)
         {
-            var buttonValue = ((Button)sender).Tag;
-            string buttonNumber = buttonValue.ToString();
+            int ButtonInt = -1;
 
-            switch (buttonNumber)
+            var buttonValue = ((Button)sender).Tag;            
+            Int32.TryParse(buttonValue.ToString(), out ButtonInt);
+            
+            if(ButtonInt != -1)
             {
-                case "Button0":
-                    objGuiDataViewModel.removeTag(0);
-                    break;
-                case "Button1":
-                    objGuiDataViewModel.removeTag(1);
-                    break;
-                case "Button2":
-                    objGuiDataViewModel.removeTag(2);
-                    break;
-                case "Button3":
-                    objGuiDataViewModel.removeTag(3);
-                    break;
-                default:
-                {
-                    MessageBox.Show("Buttonnummer nicht korrekt");
-                    break;
-                }
-            }            
+                objGuiDataViewModel.removeTag(ButtonInt);
+            }
+            else
+            {
+                MessageBox.Show("Buttonnummer nicht korrekt");
+            }              
         }
 
         private void TagBoxAddTags_Tab2_KeyDown(object sender, KeyEventArgs e)
@@ -360,6 +354,7 @@ namespace TomTheTagger
     public class guiDataViewModel : INotifyPropertyChanged
     {
         private TaggedFile localGuiDataSet = new TaggedFile();
+        ObservableCollection<guiRemoveTagControls> localGuiRemoveTagControls = new ObservableCollection<guiRemoveTagControls>();
 
         string[] emptyArray = {"", "", "", "", "", "", "", "", "", "" };
 
@@ -367,6 +362,13 @@ namespace TomTheTagger
         {
             localGuiDataSet.Tags = new List<string>();
 
+            //localGuiRemoveTagControls.Add(new guiRemoveTagControls() { ButtonNumber = "0" });
+            //localGuiRemoveTagControls.Add(new guiRemoveTagControls() { ButtonNumber = "1" });
+            //localGuiRemoveTagControls.Add(new guiRemoveTagControls() { ButtonNumber = "2" });
+            //localGuiRemoveTagControls.Add(new guiRemoveTagControls() { ButtonNumber = "Button1" });
+            //localGuiRemoveTagControls.Add(new guiRemoveTagControls() { ButtonNumber = "Button2" });
+            //localGuiRemoveTagControls.Add(new guiRemoveTagControls() { ButtonNumber = "Button2" });
+            //localGuiRemoveTagControls.Add(new guiRemoveTagControls() { ButtonNumber = "Button2" });
         }
 
         /// <summary>
@@ -397,11 +399,37 @@ namespace TomTheTagger
             }
             set { }
         }
-       
+
+        internal void adaptguiRemoveTagControls()
+        {
+            if(localGuiDataSet.Tags.Count != localGuiRemoveTagControls.Count)
+            {
+                localGuiRemoveTagControls.Clear();
+
+                for (int i = 0; i < localGuiDataSet.Tags.Count; i++)
+                {
+                    localGuiRemoveTagControls.Add(new guiRemoveTagControls() { ButtonNumber = i.ToString() });
+                }
+            }
+        }
+
+
+        public ObservableCollection<guiRemoveTagControls> listRemoveTags
+        {
+            get
+            { return localGuiRemoveTagControls; }            
+            set { }
+        }
+
         public void setTag(string pNewTagToAdd)
         {            
-            localGuiDataSet.Tags.Add(pNewTagToAdd);
-            Notify("txtArray");
+            if(localGuiDataSet.Tags.Count < 5)
+            {
+                localGuiDataSet.Tags.Add(pNewTagToAdd);
+                adaptguiRemoveTagControls();
+                Notify("txtArray");
+                Notify("listRemoveTags");
+            }            
         }
 
         public void removeTag(int pIndexNr)
@@ -409,7 +437,9 @@ namespace TomTheTagger
             if(localGuiDataSet.Tags.Count > pIndexNr)
             {
                 localGuiDataSet.Tags.RemoveAt(pIndexNr);
+                adaptguiRemoveTagControls();
                 Notify("txtArray");
+                Notify("listRemoveTags");
             }            
         }
 

@@ -42,26 +42,46 @@
                             <Button Click="ButtonAddTag_Tab2_Click" Width="55" Height="25" Margin="0,0,50,0">Add Tag</Button>
                         </StackPanel>                       
                     </StackPanel>
-                    <StackPanel Orientation="Vertical" DockPanel.Dock="Right" >
-                        <StackPanel Orientation="Horizontal" Margin="0,20,0,0">
-                            <TextBox IsReadOnly="True" Height="25" Width="100" Margin="0,0,10,0" Text="{Binding Path=txtArray[0]}"></TextBox>
-                            <Button Width="45" Height="25" Margin="0,0,50,0" Tag="Button0" Click="ButtonRemoveTag_Tab2_Click">- Tag</Button>
+                    <DockPanel>                        
+                        <StackPanel DockPanel.Dock="Left">
+                            <StackPanel Orientation="Horizontal" Margin="0,20,0,0" Width="164">
+                                <TextBox IsReadOnly="True" Height="25" Width="100" Margin="0,0,10,0" Text="{Binding Path=txtArray[0]}"></TextBox>
+                                <Button Width="45" Height="25" Margin="0,0,50,0" Tag="0" Click="ButtonRemoveTag_Tab2_Click">- Tag</Button>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0,20,0,0" Width="172">
+                                <TextBox IsReadOnly="True" Height="25" Width="100" Margin="0,0,10,0" Text="{Binding Path=txtArray[1]}"></TextBox>
+                                <Button Width="45" Height="25" Margin="0,0,50,0" Tag="1" Click="ButtonRemoveTag_Tab2_Click" Content="- Tag"/>                           
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0,20,0,0" Width="168">
+                                <TextBox IsReadOnly="True" Height="25" Width="100" Margin="0,0,10,0" Text="{Binding Path=txtArray[2]}"></TextBox>
+                                <Button Width="45" Height="25" Margin="0,0,50,0" Tag="2" Click="ButtonRemoveTag_Tab2_Click">- Tag</Button>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0,20,0,0" Width="167">
+                                <TextBox IsReadOnly="True" Height="25" Width="100" Margin="0,0,10,0" Text="{Binding Path=txtArray[3]}"></TextBox>
+                                <Button Width="45" Height="25" Margin="0,0,50,0" Tag="3" Click="ButtonRemoveTag_Tab2_Click">- Tag</Button>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0,20,0,0" Width="163">
+                                <TextBox IsReadOnly="True" Height="25" Width="100" Margin="0,0,10,0" Text="{Binding Path=txtArray[4]}"></TextBox>
+                                <Button Width="45" Height="25" Margin="0,0,50,0" Tag="4" Click="ButtonRemoveTag_Tab2_Click">- Tag</Button>
+                            </StackPanel>
                         </StackPanel>
-                        <StackPanel Orientation="Horizontal" Margin="0,20,0,0">
-                            <TextBox IsReadOnly="True" Height="25" Width="100" Margin="0,0,10,0" Text="{Binding Path=txtArray[1]}"></TextBox>
-                            <Button Width="45" Height="25" Margin="0,0,50,0" Tag="Button1" Click="ButtonRemoveTag_Tab2_Click" Content="- Tag"/>                           
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0,20,0,0" Width="164">
+                                <!--<ItemsControl ItemsSource="{Binding objguiRemoveTagControls}">-->
+                                <!--<ItemsControl Name="icTodoList">-->
+                                <ItemsControl ItemsSource="{Binding Path=listRemoveTags}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Horizontal" Margin="0,20,0,0" Width="164">
+                                                <TextBox IsReadOnly="True" Height="25" Width="100" Margin="0,0,10,0"></TextBox>
+                                                <Button Width="45" Height="25" Margin="0,0,50,0" Tag="{Binding ButtonNumber}" Click="ButtonRemoveTag_Tab2_Click">- Tag</Button>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
                         </StackPanel>
-                        <StackPanel Orientation="Horizontal" Margin="0,20,0,0">
-                            <TextBox IsReadOnly="True" Height="25" Width="100" Margin="0,0,10,0" Text="{Binding Path=txtArray[2]}"></TextBox>
-                            <Button Width="45" Height="25" Margin="0,0,50,0" Tag="Button2" Click="ButtonRemoveTag_Tab2_Click">- Tag</Button>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal" Margin="0,20,0,0">
-                            <TextBox IsReadOnly="True" Height="25" Width="100" Margin="0,0,10,0" Text="{Binding Path=txtArray[3]}"></TextBox>
-                            <Button Width="45" Height="25" Margin="0,0,50,0" Tag="Button3" Click="ButtonRemoveTag_Tab2_Click">- Tag</Button>
-                            <TextBox IsReadOnly="True" Height="25" Width="100" Margin="0,0,10,0"></TextBox>
-                            <Button Width="45" Height="25">- Tag</Button>
-                        </StackPanel>
-                    </StackPanel>
+                    </DockPanel>
                 </DockPanel>
             </TabItem>
             <TabItem Header="Settings" />
