@@ -41,10 +41,8 @@
                             <TextBox Name="TextboxAddTag_Tab2_Name" Height="25" Width="100" KeyDown="TagBoxAddTags_Tab2_KeyDown"></TextBox>
                             <Button Click="ButtonAddTag_Tab2_Click" Height="25" Width="55" Margin="0,0,0,0">+ Tag</Button>
                         </StackPanel>
-                        <StackPanel>
                             <Button Click="ButtonSaveTags_Tab2_Click" Height="25" Width="155" Margin="0,20,0,0" HorizontalAlignment="Left">Speichern</Button>
-                        </StackPanel>
-                         
+                            <Button Height="25" Width="155" Margin="0,20,0,0" HorizontalAlignment="Left">Datei Entfernen</Button>
                     </StackPanel>
                     <StackPanel>
                         <ItemsControl ItemsSource="{Binding Path=listRemoveTags}">

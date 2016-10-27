@@ -164,7 +164,6 @@ namespace TomTheTagger
             OpenFileDialog openFileDialog = new OpenFileDialog();
             if (openFileDialog.ShowDialog() == true)
                 objGuiDataViewModel.txtPath = openFileDialog.FileName;
-
         }
 
         private void ButtonSaveTags_Tab2_Click(object sender, RoutedEventArgs e)
@@ -352,18 +351,45 @@ namespace TomTheTagger
             mTaggedFileListe = JsonConvert.DeserializeObject<List<TaggedFile>>(JsonDatabaseFileInString);
         }
 
-        public void setTagsInDatabase (TaggedFile pFileWithTagsToBeSavedInDatabase)
+        /// <summary>
+        /// Check if TaggedFile is already in database
+        /// Return: true > file is already in database
+        ///         false > file is NOT in database
+        /// </summary>    
+        public bool doesFileExistDatabase (TaggedFile pFileWithTagsToBeSavedInDatabase)
         {
-            var item = mTaggedFileListe.FirstOrDefault(m => m.Path == pFileWithTagsToBeSavedInDatabase.Path);
+            //var item = mTaggedFileListe.FirstOrDefault(m => m.Path == pFileWithTagsToBeSavedInDatabase.Path);
+            return mTaggedFileListe.Exists(m => m.Path == pFileWithTagsToBeSavedInDatabase.Path);           
+        }
 
-            if (item == null) 
+        internal void addTagsToFileInDatabase(TaggedFile pFileWithTagsToBeAddedToExistingFileInDatabase)
+        {
+            LoadJsonDatabaseFile();
+
+            int indexOfFileToManipulate = mTaggedFileListe.FindIndex(m => m.Path == pFileWithTagsToBeAddedToExistingFileInDatabase.Path);
+
+            mTaggedFileListe[indexOfFileToManipulate].Tags.Clear();
+            
+            foreach (var item in pFileWithTagsToBeAddedToExistingFileInDatabase.Tags)
             {
-                MessageBox.Show("Datei befindet sich bisher NICHT in der Sammlung");
+                mTaggedFileListe[indexOfFileToManipulate].Tags.Add(item);
             }
-            else
-            {
-                MessageBox.Show("Datei befindet sich in der Sammlung");
-            }
+
+            writeTaggedListToFile();
+        }
+
+        internal void addFileToDatabase(TaggedFile pFileToBeAddedToDatabase)
+        {
+            LoadJsonDatabaseFile();
+
+            mTaggedFileListe.Add(pFileToBeAddedToDatabase);
+
+            writeTaggedListToFile();
+        }
+
+        internal void writeTaggedListToFile()
+        {
+            File.WriteAllText(mDatabaseLocation, JsonConvert.SerializeObject(mTaggedFileListe));
         }
     }
 
@@ -459,9 +485,16 @@ namespace TomTheTagger
         {
             if(localGuiDataSet.Tags.Count > 0)
             {
-                if (localGuiDataSet.Path != null)
+                if(localGuiDataSet.Path != null)
                 {
-                    pDataBase.setTagsInDatabase(localGuiDataSet);
+                    if (pDataBase.doesFileExistDatabase(localGuiDataSet)) //File does exist in database
+                    {
+                        pDataBase.addTagsToFileInDatabase(localGuiDataSet);
+                    }
+                    else //File does NOT exist in database
+                    {
+                        pDataBase.addFileToDatabase(localGuiDataSet);
+                    }
                 }
                 else
                 {
