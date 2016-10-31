@@ -163,12 +163,17 @@ namespace TomTheTagger
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
             if (openFileDialog.ShowDialog() == true)
-                objGuiDataViewModel.txtPath = openFileDialog.FileName;
+                objGuiDataViewModel.openFile(oDataBase, openFileDialog.FileName);
         }
 
         private void ButtonSaveTags_Tab2_Click(object sender, RoutedEventArgs e)
         {
             objGuiDataViewModel.saveTagsToDatabase(oDataBase);
+        }
+
+        private void ButtonRemoveFile_Tab2_Click(object sender, RoutedEventArgs e)
+        {
+            objGuiDataViewModel.removeFile(oDataBase);
         }
     }
 
@@ -364,7 +369,7 @@ namespace TomTheTagger
 
         internal void addTagsToFileInDatabase(TaggedFile pFileWithTagsToBeAddedToExistingFileInDatabase)
         {
-            LoadJsonDatabaseFile();
+            //LoadJsonDatabaseFile();
 
             int indexOfFileToManipulate = mTaggedFileListe.FindIndex(m => m.Path == pFileWithTagsToBeAddedToExistingFileInDatabase.Path);
 
@@ -380,29 +385,54 @@ namespace TomTheTagger
 
         internal void addFileToDatabase(TaggedFile pFileToBeAddedToDatabase)
         {
-            LoadJsonDatabaseFile();
+            //LoadJsonDatabaseFile();
 
             mTaggedFileListe.Add(pFileToBeAddedToDatabase);
 
             writeTaggedListToFile();
         }
 
+        internal List<string> getTagsFromFileInDatabase(TaggedFile pFileToReadTagsFrom)
+        {
+            int indexOfFileToReadFrom = mTaggedFileListe.FindIndex(m => m.Path == pFileToReadTagsFrom.Path);
+
+            return mTaggedFileListe[indexOfFileToReadFrom].Tags;
+        }
+
         internal void writeTaggedListToFile()
         {
             File.WriteAllText(mDatabaseLocation, JsonConvert.SerializeObject(mTaggedFileListe));
         }
+
+        internal bool removeFileFromDB(TaggedFile pFileToBeRemoved)
+        {
+            int indexOfFileToBeRemoved = mTaggedFileListe.FindIndex(m => m.Path == pFileToBeRemoved.Path);
+
+            if(indexOfFileToBeRemoved != -1)
+            {
+                mTaggedFileListe.RemoveAt(indexOfFileToBeRemoved);
+                writeTaggedListToFile();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
     }
 
     public class guiDataViewModel : INotifyPropertyChanged
-    {        
+    {
         private TaggedFile localGuiDataSet;
         internal ObservableCollection<guiRemoveTagControls> localGuiRemoveTagControls;
+        private bool localSavingState; //true > All changes saved 
 
         /// <summary>
         /// Constructor
         /// </summary>
         public guiDataViewModel()
         {
+            localSavingState = true;
             localGuiDataSet = new TaggedFile();
             localGuiDataSet.Tags = new List<string>();
 
@@ -419,6 +449,35 @@ namespace TomTheTagger
             //localGuiRemoveTagControls.Add(new guiRemoveTagControls() { ButtonNumber = "1", TagBoxNumber = "test" });
             //localGuiRemoveTagControls.Add(new guiRemoveTagControls() { ButtonNumber = "1", TagBoxNumber = "test" });
 
+        }
+
+        public string savingState
+        {
+            get
+            {
+                if(localSavingState == true)
+                {
+                    return "Gespeichert";
+                }
+                else
+                {
+                    return "Änderungen ungespeichert";
+                }
+            }
+            set
+            {
+                if (value == "gespeichert")
+                {
+                    localSavingState = true;
+                    Notify("savingState");
+                }
+
+                if (value == "ungespeichert")
+                {
+                    localSavingState = false;
+                    Notify("savingState");
+                }
+            }
         }
 
         /// <summary>
@@ -464,9 +523,17 @@ namespace TomTheTagger
         /// Set one tag to localGuiDataSet 
         /// </summary>
         internal void setTag(string pNewTagToAdd)
-        { 
+        {
+            if (localGuiDataSet.Path != null)
+            {
                 localGuiDataSet.Tags.Add(pNewTagToAdd);
-                adaptguiRemoveTagControls();            
+                adaptguiRemoveTagControls();
+                savingState = "ungespeichert";
+            }
+            else
+            {
+                MessageBox.Show("Keine Datei ausgewählt");
+            }
         }
 
         /// <summary>
@@ -478,15 +545,18 @@ namespace TomTheTagger
             {
                 localGuiDataSet.Tags.RemoveAt(pIndexNr);
                 adaptguiRemoveTagControls();
+                savingState = "ungespeichert";
             }            
         }
 
         internal void saveTagsToDatabase(DatabaseManager pDataBase)
         {
-            if(localGuiDataSet.Tags.Count > 0)
+            if (localGuiDataSet.Tags.Count > 0)
             {
                 if(localGuiDataSet.Path != null)
                 {
+                    pDataBase.LoadJsonDatabaseFile();
+
                     if (pDataBase.doesFileExistDatabase(localGuiDataSet)) //File does exist in database
                     {
                         pDataBase.addTagsToFileInDatabase(localGuiDataSet);
@@ -495,17 +565,54 @@ namespace TomTheTagger
                     {
                         pDataBase.addFileToDatabase(localGuiDataSet);
                     }
+                    savingState = "gespeichert";
                 }
                 else
                 {
                     MessageBox.Show("Keine Datei ausgewählt");
                 }
-
             }
             else
             {
                 MessageBox.Show("Keine Tags gesetzt");
             }
+        }
+
+        internal void openFile(DatabaseManager pDataBase, string pFilePath)
+        {
+            txtPath = pFilePath;
+            pDataBase.LoadJsonDatabaseFile();
+            localGuiDataSet.Tags.Clear();
+                        
+            if (pDataBase.doesFileExistDatabase(localGuiDataSet))
+            {   // File exists in DB >> load existing TAGs
+                foreach (var item in pDataBase.getTagsFromFileInDatabase(localGuiDataSet))
+                {
+                    localGuiDataSet.Tags.Add(item);
+                }
+            }       
+            adaptguiRemoveTagControls();
+            savingState = "gespeichert";
+        }
+
+        internal void removeFile(DatabaseManager pDataBase)
+        {
+            pDataBase.LoadJsonDatabaseFile();
+
+            if (localGuiDataSet.Path != null)
+            {
+                if (!pDataBase.removeFileFromDB(localGuiDataSet))
+                {
+                    MessageBox.Show("Datei konnte nicht gelöscht werden");
+                }
+                localGuiDataSet.Tags.Clear();                
+                txtPath = null;
+                adaptguiRemoveTagControls();
+            }
+            else
+            {
+                MessageBox.Show("Keine Datei ausgewählt");
+            }            
         }
 
         /// <summary>

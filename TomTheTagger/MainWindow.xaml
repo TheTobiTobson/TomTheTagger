@@ -42,7 +42,8 @@
                             <Button Click="ButtonAddTag_Tab2_Click" Height="25" Width="55" Margin="0,0,0,0">+ Tag</Button>
                         </StackPanel>
                             <Button Click="ButtonSaveTags_Tab2_Click" Height="25" Width="155" Margin="0,20,0,0" HorizontalAlignment="Left">Speichern</Button>
-                            <Button Height="25" Width="155" Margin="0,20,0,0" HorizontalAlignment="Left">Datei Entfernen</Button>
+                        <Label Content="{Binding savingState}"></Label>
+                            <Button Click="ButtonRemoveFile_Tab2_Click" Height="25" Width="155" Margin="0,20,0,0" HorizontalAlignment="Left">Datei Entfernen</Button>                        
                     </StackPanel>
                     <StackPanel>
                         <ItemsControl ItemsSource="{Binding Path=listRemoveTags}">
