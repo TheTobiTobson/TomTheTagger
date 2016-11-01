@@ -34,17 +34,20 @@
                 <DockPanel>
                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
                         <Label Content="{Binding txtPath}" Width="405" Margin="0,0,20,0"></Label>
-                        <Button Margin="20,0,0,0" Width="110" Height="25" Click="ButtonOpenFile_Tab2_Click">Datei auswählen</Button>
+                        <Button Margin="20,0,0,0" Width="110" Height="25" Content="Datei _Auswählen" Click="ButtonOpenFile_Tab2_Click"></Button>
                     </StackPanel>
                     <StackPanel Orientation="Vertical" DockPanel.Dock="Left" Width="225">
-                        <StackPanel Orientation="Horizontal"  Margin="0,20,0,0">
+                        <Label Content="_Tag hinzufügen" Target="{Binding ElementName=TextboxAddTag_Tab2_Name}"></Label>
+                        <StackPanel Orientation="Horizontal"  Margin="0,0,0,0">
                             <TextBox Name="TextboxAddTag_Tab2_Name" Height="25" Width="100" KeyDown="TagBoxAddTags_Tab2_KeyDown"></TextBox>
                             <Button Click="ButtonAddTag_Tab2_Click" Height="25" Width="55" Margin="0,0,0,0">+ Tag</Button>
                         </StackPanel>
-                            <Button Click="ButtonSaveTags_Tab2_Click" Height="25" Width="155" Margin="0,20,0,0" HorizontalAlignment="Left">Speichern</Button>
+                            <Button Click="ButtonSaveTags_Tab2_Click" Height="25" Width="155" Margin="0,20,0,0" HorizontalAlignment="Left" Content="_Speichern"></Button>
                         <Label Content="{Binding savingState}"></Label>
-                            <Button Click="ButtonRemoveFile_Tab2_Click" Height="25" Width="155" Margin="0,20,0,0" HorizontalAlignment="Left">Datei Entfernen</Button>
-                        <Button Click="ButtonExit_Tab2_Click" Height="25" Width="155" Margin="0,20,0,0" HorizontalAlignment="Left">Beenden</Button>
+                            <Button Click="ButtonRemoveFile_Tab2_Click" Height="25" Width="155" Margin="0,20,0,0" HorizontalAlignment="Left" Content="Datei _Entfernen"></Button>
+                        <Button Click="ButtonExit_Tab2_Click" Height="25" Width="155" Margin="0,20,0,0" HorizontalAlignment="Left" Content="_Beenden"></Button>
+                        <!--<Label Content="_Tobi" Target="{Binding ElementName=TextboxAddTag_Tab2_Name}" Visibility="c"></Label>
+                        <Label Content="_Open" Target="{Binding ElementName=ButtonOpenFile_Tab2}" Visibility="Hidden"></Label>-->
                     </StackPanel>
                     <StackPanel>
                         <ItemsControl ItemsSource="{Binding Path=listRemoveTags}">
@@ -67,7 +70,6 @@
                     <!--</DockPanel>-->
                 </DockPanel>
             </TabItem>
-            <TabItem Header="Settings" />
         </TabControl>
     </Grid>
 </Window>

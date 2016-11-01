@@ -430,12 +430,40 @@ namespace TomTheTagger
 
             writeTaggedListToFile();
         }
-
-        internal List<string> getTagsFromFileInDatabase(TaggedFile pFileToReadTagsFrom)
+        
+        /// <summary>
+        /// Write Tags and IdentNr from Database to local File for Gui
+        /// true > File found and inform. copied
+        /// false > File not found
+        /// </summary>
+        internal bool getTagsAndIdentNrFromFileInDatabase(TaggedFile pLocalObjectToStoreTagsAndIdentNr)
         {
-            int indexOfFileToReadFrom = mTaggedFileListe.FindIndex(m => m.Path == pFileToReadTagsFrom.Path);
+            int indexOfFileToReadFrom = mTaggedFileListe.FindIndex(m => m.Path == pLocalObjectToStoreTagsAndIdentNr.Path);
 
-            return mTaggedFileListe[indexOfFileToReadFrom].Tags;
+            if(indexOfFileToReadFrom != -1)
+            {
+                foreach (var item in mTaggedFileListe[indexOfFileToReadFrom].Tags)
+                {
+                    pLocalObjectToStoreTagsAndIdentNr.Tags.Add(item);
+                }
+
+                pLocalObjectToStoreTagsAndIdentNr.IdentNr = mTaggedFileListe[indexOfFileToReadFrom].IdentNr;
+
+                return true;
+            }
+            return false;
+        }
+
+        internal int getNextFreeIdentNr()
+        {
+            List<int> utilizedIntsInDatabse = new List<int>();
+
+            foreach (var item in mTaggedFileListe)
+            {
+                utilizedIntsInDatabse.Add(item.IdentNr);
+            }
+
+            return Enumerable.Range(1, Int32.MaxValue).Except(utilizedIntsInDatabse).First();
         }
 
         internal void writeTaggedListToFile()
@@ -478,7 +506,7 @@ namespace TomTheTagger
             localGuiRemoveTagControls = new ObservableCollection<guiRemoveTagControls>();
     }
 
-    public string savingState
+        public string savingState
         {
             get
             {
@@ -518,8 +546,8 @@ namespace TomTheTagger
                 localGuiDataSet.Path = value;
                 Notify("txtPath");
             }
-        }
-        
+        }      
+
         /// <summary>
         /// Make sure that all tags are available in localGuiRemoveTagControls (to be rendered in itemsControl)
         /// </summary>
@@ -584,8 +612,8 @@ namespace TomTheTagger
                 {
                     pDataBase.RefreshJsonDatabaseFile();
 
-                    if (pDataBase.doesFileExistDatabase(localGuiDataSet)) //File does exist in database
-                    {
+                    if (pDataBase.doesFileExistDatabase(localGuiDataSet))
+                    {   //File does exist in database
                         pDataBase.addTagsToFileInDatabase(localGuiDataSet);
                     }
                     else //File does NOT exist in database
@@ -607,16 +635,25 @@ namespace TomTheTagger
 
         internal void openFile(DatabaseManager pDataBase, string pFilePath)
         {
-            txtPath = pFilePath;
-            pDataBase.RefreshJsonDatabaseFile();
+            //clear Local Dataset
+            localGuiDataSet.IdentNr = -1;            
             localGuiDataSet.Tags.Clear();
-                        
+
+            pDataBase.RefreshJsonDatabaseFile();
+
+            txtPath = pFilePath;
+
             if (pDataBase.doesFileExistDatabase(localGuiDataSet))
-            {   // File exists in DB >> load existing TAGs
-                foreach (var item in pDataBase.getTagsFromFileInDatabase(localGuiDataSet))
-                {
-                    localGuiDataSet.Tags.Add(item);
+            {   // File exists in DB >> load existing TAGs and IdentNr                
+               if(!pDataBase.getTagsAndIdentNrFromFileInDatabase(localGuiDataSet))
+                { // Error on loading data
+                    MessageBox.Show("Fehler beim Lesen der Informationen von " + txtPath);
+                    txtPath = "";
                 }
+            }
+            else
+            {// File does NOT exist in database
+                localGuiDataSet.IdentNr = pDataBase.getNextFreeIdentNr();
             }       
             adaptguiRemoveTagControls();
             savingState = "gespeichert";
@@ -634,6 +671,7 @@ namespace TomTheTagger
                 }
                 localGuiDataSet.Tags.Clear();                
                 txtPath = null;
+                localGuiDataSet.IdentNr = -1;
                 adaptguiRemoveTagControls();
             }
             else
