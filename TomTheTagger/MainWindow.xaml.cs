@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using Microsoft.Win32;
+using System.Xml;
 
 namespace TomTheTagger
 {
@@ -81,17 +82,50 @@ namespace TomTheTagger
     /// </summary>
     public partial class MainWindow : Window
     {
-        DatabaseManager oDataBase = new DatabaseManager("JSONTestData.txt");
+        DatabaseManager oDataBase = new DatabaseManager();
         SearchOperations oSearchOps = new SearchOperations();
-        guiDataViewModel objGuiDataViewModel = new guiDataViewModel();        
+        guiDataViewModel objGuiDataViewModel = new guiDataViewModel();
+        iniFileHandler oConfigFile = new iniFileHandler("config.ini");
 
         public MainWindow()
         {
             InitializeComponent();            
             
-            this.DataContext = objGuiDataViewModel;
+            this.DataContext = objGuiDataViewModel; 
 
-            oDataBase.LoadJsonDatabaseFile();            
+            // Check if config.ini exists
+            if (!File.Exists(oConfigFile.getConfigFileLocation()))
+            {
+                MessageBox.Show("config.ini nicht gefunden");
+                Application.Current.Shutdown();
+                return;
+            }
+
+            // check if path to database is stored in config.ini
+            if(!oConfigFile.loadDatabaseFileLocation())
+            {
+                MessageBox.Show("config.ini enthält keinen Pfad zur Datanbank Datei");
+                Application.Current.Shutdown();
+                return;
+            }
+
+            // check if JSON database file exists
+            if (!File.Exists(oConfigFile.getDatabaseFileLocation()))
+            {
+                MessageBox.Show("Datanbank Datei nicht gefunden");
+                Application.Current.Shutdown();
+                return;
+            }
+                        
+            oDataBase.LoadJsonDatabaseFile(oConfigFile.getDatabaseFileLocation());
+
+            // check if JSON database file is empty
+            if (oDataBase.mTaggedFileListe == null)
+            {
+                MessageBox.Show("Die Datanbank Datei in " + oConfigFile.getDatabaseFileLocation() + " enthält keine Datan und ist nicht initialisiert");
+                Application.Current.Shutdown();
+                return;
+            }
         }
 
         /// <summary>
@@ -174,6 +208,11 @@ namespace TomTheTagger
         private void ButtonRemoveFile_Tab2_Click(object sender, RoutedEventArgs e)
         {
             objGuiDataViewModel.removeFile(oDataBase);
+        }
+
+        private void ButtonExit_Tab2_Click(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Shutdown();
         }
     }
 
@@ -338,19 +377,19 @@ namespace TomTheTagger
     {
         public string mDatabaseLocation; //Location of JSON Database file
         public List<TaggedFile> mTaggedFileListe; //Database in RAM
-
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        public DatabaseManager(string pDatabaseLocation)
-        {
-            mDatabaseLocation = pDatabaseLocation;
-        }
-
+        
         /// <summary>
         /// Load Database from json file to RAM
         /// </summary>
-        public void LoadJsonDatabaseFile()
+        public void LoadJsonDatabaseFile(string pDatabaseLocation)
+        {
+            mDatabaseLocation = pDatabaseLocation;
+
+            string JsonDatabaseFileInString = File.ReadAllText(mDatabaseLocation);
+            mTaggedFileListe = JsonConvert.DeserializeObject<List<TaggedFile>>(JsonDatabaseFileInString);
+        }
+
+        public void RefreshJsonDatabaseFile()
         {
             string JsonDatabaseFileInString = File.ReadAllText(mDatabaseLocation);
             mTaggedFileListe = JsonConvert.DeserializeObject<List<TaggedFile>>(JsonDatabaseFileInString);
@@ -437,21 +476,9 @@ namespace TomTheTagger
             localGuiDataSet.Tags = new List<string>();
 
             localGuiRemoveTagControls = new ObservableCollection<guiRemoveTagControls>();
+    }
 
-            //localGuiRemoveTagControls.Add(new guiRemoveTagControls() { ButtonNumber = "1", TagBoxNumber = "test" });
-            //localGuiRemoveTagControls.Add(new guiRemoveTagControls() { ButtonNumber = "1", TagBoxNumber = "test" });
-            //localGuiRemoveTagControls.Add(new guiRemoveTagControls() { ButtonNumber = "1", TagBoxNumber = "test" });
-            //localGuiRemoveTagControls.Add(new guiRemoveTagControls() { ButtonNumber = "1", TagBoxNumber = "test" });
-            //localGuiRemoveTagControls.Add(new guiRemoveTagControls() { ButtonNumber = "1", TagBoxNumber = "test" });
-            //localGuiRemoveTagControls.Add(new guiRemoveTagControls() { ButtonNumber = "1", TagBoxNumber = "test" });
-            //localGuiRemoveTagControls.Add(new guiRemoveTagControls() { ButtonNumber = "1", TagBoxNumber = "test" });
-            //localGuiRemoveTagControls.Add(new guiRemoveTagControls() { ButtonNumber = "1", TagBoxNumber = "test" });
-            //localGuiRemoveTagControls.Add(new guiRemoveTagControls() { ButtonNumber = "1", TagBoxNumber = "test" });
-            //localGuiRemoveTagControls.Add(new guiRemoveTagControls() { ButtonNumber = "1", TagBoxNumber = "test" });
-
-        }
-
-        public string savingState
+    public string savingState
         {
             get
             {
@@ -478,7 +505,7 @@ namespace TomTheTagger
                     Notify("savingState");
                 }
             }
-        }
+        }       
 
         /// <summary>
         /// Path get/set
@@ -555,7 +582,7 @@ namespace TomTheTagger
             {
                 if(localGuiDataSet.Path != null)
                 {
-                    pDataBase.LoadJsonDatabaseFile();
+                    pDataBase.RefreshJsonDatabaseFile();
 
                     if (pDataBase.doesFileExistDatabase(localGuiDataSet)) //File does exist in database
                     {
@@ -581,7 +608,7 @@ namespace TomTheTagger
         internal void openFile(DatabaseManager pDataBase, string pFilePath)
         {
             txtPath = pFilePath;
-            pDataBase.LoadJsonDatabaseFile();
+            pDataBase.RefreshJsonDatabaseFile();
             localGuiDataSet.Tags.Clear();
                         
             if (pDataBase.doesFileExistDatabase(localGuiDataSet))
@@ -597,7 +624,7 @@ namespace TomTheTagger
 
         internal void removeFile(DatabaseManager pDataBase)
         {
-            pDataBase.LoadJsonDatabaseFile();
+            pDataBase.RefreshJsonDatabaseFile();
 
             if (localGuiDataSet.Path != null)
             {
@@ -627,5 +654,5 @@ namespace TomTheTagger
             }
         }
     }
-
+   
 }

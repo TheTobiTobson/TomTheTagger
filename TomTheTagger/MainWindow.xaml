@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TomTheTagger"
         mc:Ignorable="d"
-        Title="MainWindow" Height="388.583" Width="635.827">
+        Title="MainWindow" Height="388.583" Width="650">
     <Grid>
         <TabControl>
             <TabItem Header="Search">
@@ -43,7 +43,8 @@
                         </StackPanel>
                             <Button Click="ButtonSaveTags_Tab2_Click" Height="25" Width="155" Margin="0,20,0,0" HorizontalAlignment="Left">Speichern</Button>
                         <Label Content="{Binding savingState}"></Label>
-                            <Button Click="ButtonRemoveFile_Tab2_Click" Height="25" Width="155" Margin="0,20,0,0" HorizontalAlignment="Left">Datei Entfernen</Button>                        
+                            <Button Click="ButtonRemoveFile_Tab2_Click" Height="25" Width="155" Margin="0,20,0,0" HorizontalAlignment="Left">Datei Entfernen</Button>
+                        <Button Click="ButtonExit_Tab2_Click" Height="25" Width="155" Margin="0,20,0,0" HorizontalAlignment="Left">Beenden</Button>
                     </StackPanel>
                     <StackPanel>
                         <ItemsControl ItemsSource="{Binding Path=listRemoveTags}">
