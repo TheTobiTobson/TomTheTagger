@@ -16,7 +16,8 @@
                         <TextBox Name="TagBox3" KeyDown="TagBox_KeyDown" Height="20" Width="100" Margin="20,0,0,0"></TextBox>
                         <TextBox Name="TagBox4" KeyDown="TagBox_KeyDown" Height="20" Width="100" Margin="20,0,0,0"></TextBox>
                     </StackPanel>
-                    <ListView Name="lvUsers">
+                    <!--<ListView Name="lvUsers">-->
+                    <ListView ItemsSource="{Binding Path=listGuiSearchResults}">
                         <ListView.View>
                             <GridView>
                                 <GridViewColumn Header="ID" Width="40" DisplayMemberBinding="{Binding IdentNr}" />
@@ -24,6 +25,7 @@
                                 <GridViewColumn Header="Tag 0" Width="40" DisplayMemberBinding="{Binding Tags[0]}" />
                                 <GridViewColumn Header="Tag 1" Width="40" DisplayMemberBinding="{Binding Tags[1]}" />
                                 <GridViewColumn Header="Tag 2" Width="40" DisplayMemberBinding="{Binding Tags[2]}" />
+                                <GridViewColumn Header="Tag 2" Width="40" DisplayMemberBinding="{Binding Tags[3]}" />
                                 <GridViewColumn Header="Tag 2" Width="40" DisplayMemberBinding="{Binding Tags[3]}" />
                             </GridView>
                         </ListView.View>

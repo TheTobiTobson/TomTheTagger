@@ -25,7 +25,7 @@ namespace TomTheTagger
     /// <summary>
     /// Place to store data from JSON Database file
     /// </summary>
-    class TaggedFile
+    public class TaggedFile
     {
         public int IdentNr { get; set; }
         public string Path { get; set; }
@@ -135,20 +135,9 @@ namespace TomTheTagger
         {
             if(e.Key == Key.Enter)
             {
-                string[] tagsFromGui = { TagBox1.Text, TagBox2.Text, TagBox3.Text, TagBox4.Text };
-                string[] validTagStringArray = null;
+                string[] rawTagsFromGui = { TagBox1.Text, TagBox2.Text, TagBox3.Text, TagBox4.Text };
 
-                // Validate string
-                if (!oSearchOps.validateAndOrganizeTags(tagsFromGui, ref validTagStringArray))
-                {
-                    MessageBox.Show("No TAGs to search for");
-                }
-                else
-                {
-                    // Start Search
-                    lvUsers.ItemsSource = oSearchOps.searchForMultipleTags(validTagStringArray, oDataBase.mTaggedFileListe);
-                }
-                
+                objGuiDataViewModel.searchForTags(rawTagsFromGui, oDataBase.mTaggedFileListe, oSearchOps);                
             }
         }
 
@@ -224,7 +213,7 @@ namespace TomTheTagger
         /// <summary>
         /// Merge all search results. Merge data from database for GUI
         /// </summary>       
-        internal List<TaggedFile> searchForMultipleTags(string[] pSearchtagsFromGui, List<TaggedFile> pjsonDatabaseInRam)
+        internal ObservableCollection<TaggedFile> searchForMultipleTags(string[] pSearchtagsFromGui, List<TaggedFile> pjsonDatabaseInRam)
         {
             List<identTagPair>[] arrayOfIdentTagPairLists = new List<identTagPair>[10]; // später pSearchtagsFromGui.Length()
 
@@ -356,15 +345,14 @@ namespace TomTheTagger
         /// <summary>
         /// Merge Database information and identAndMultipleTagsList together in order to have all relevant information for GUI
         /// </summary>
-        private List<TaggedFile> mergeDatabaseAndSearchResults(List<identAndMultipleTags> pidentAndMultipleTagsList, List<TaggedFile> pjsonDatabaseInRam)
+        private ObservableCollection<TaggedFile> mergeDatabaseAndSearchResults(List<identAndMultipleTags> pidentAndMultipleTagsList, List<TaggedFile> pjsonDatabaseInRam)
         {
-            List<TaggedFile> localMergedList = new List<TaggedFile>();
-
+            
             var Search = from p in pidentAndMultipleTagsList
                          join t in pjsonDatabaseInRam on p.mIdentNr equals t.IdentNr
                          select new TaggedFile() { IdentNr = t.IdentNr, Active = t.Active, Path = t.Path, Tags = p.mAllTagInThisFileThatCorrespondsToQuery };
-
-            localMergedList = Search.ToList();
+            
+            ObservableCollection<TaggedFile> localMergedList = new ObservableCollection<TaggedFile>(Search);
 
             return localMergedList;
         }
@@ -492,6 +480,7 @@ namespace TomTheTagger
     {
         private TaggedFile localGuiDataSet;
         internal ObservableCollection<guiRemoveTagControls> localGuiRemoveTagControls;
+        internal ObservableCollection<TaggedFile> localGuiSearchResults;
         private bool localSavingState; //true > All changes saved 
 
         /// <summary>
@@ -504,6 +493,7 @@ namespace TomTheTagger
             localGuiDataSet.Tags = new List<string>();
 
             localGuiRemoveTagControls = new ObservableCollection<guiRemoveTagControls>();
+            localGuiSearchResults = new ObservableCollection<TaggedFile>();
     }
 
         public string savingState
@@ -552,16 +542,13 @@ namespace TomTheTagger
         /// Make sure that all tags are available in localGuiRemoveTagControls (to be rendered in itemsControl)
         /// </summary>
         internal void adaptguiRemoveTagControls()
-        {
-            if(localGuiDataSet.Tags.Count != localGuiRemoveTagControls.Count)
-            {
+        {           
                 localGuiRemoveTagControls.Clear();
 
                 for (int i = 0; i < localGuiDataSet.Tags.Count; i++)
                 {
                     localGuiRemoveTagControls.Add(new guiRemoveTagControls() { ButtonNumber = i.ToString(), TagBoxNumber = localGuiDataSet.Tags[i] });
                 }
-            }
         }
 
         /// <summary>
@@ -572,6 +559,36 @@ namespace TomTheTagger
             get
             { return localGuiRemoveTagControls; }            
             set { }
+        }
+
+        public ObservableCollection<TaggedFile> listGuiSearchResults
+        {
+            get
+            { return localGuiSearchResults; }
+            set { }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void searchForTags(string[] pRawSearchtagsFromGui, List<TaggedFile> pjsonDatabaseInRam, SearchOperations pSearchOps)
+        {
+            // Validate search Tags
+            string[] validTagStringArray = null;
+
+            if (!pSearchOps.validateAndOrganizeTags(pRawSearchtagsFromGui, ref validTagStringArray))
+            {
+                MessageBox.Show("No TAGs to search for");
+            }
+            else
+            {   // Tags available >> Search 
+                // localGuiSearchResults needs to be filled by loop for GUI refresh
+                localGuiSearchResults.Clear();
+                foreach (var item in pSearchOps.searchForMultipleTags(validTagStringArray, pjsonDatabaseInRam))
+                {
+                    localGuiSearchResults.Add(item);
+                }
+            }
         }
 
         /// <summary>
